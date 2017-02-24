@@ -10,7 +10,18 @@ $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 $sql = "SET NAMES 'utf-8'";
 $dbh->query($sql);
 
-create_playlist( 1 );
+$sql = "SELECT id, name, description FROM playlists";
+
+$sth = $dbh->prepare($sql);
+$sth->execute();
+$results = $sth->fetchAll();
+	
+foreach( $results as $playlist ){
+	create_playlist( $playlist['id']);
+}
+
+
+
 
 function create_playlist( $playlist_id ){
 	
@@ -52,6 +63,11 @@ function create_playlist( $playlist_id ){
 	}
 	
 	echo json_encode($tracks);
+	
+	$file = 'playlist_' . $playlist_id . '.json';
+	// Write the contents back to the file
+	file_put_contents($file, json_encode($tracks));
+
 }
 
 ?>
