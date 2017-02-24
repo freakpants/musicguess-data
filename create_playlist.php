@@ -16,10 +16,11 @@ $sth = $dbh->prepare($sql);
 $sth->execute();
 $results = $sth->fetchAll();
 	
-foreach( $results as $playlist ){
+ foreach( $results as $playlist ){
 	create_playlist( $playlist['id']);
-}
+} 
 
+// create_playlist( 9 );
 
 
 
@@ -64,7 +65,7 @@ function create_playlist( $playlist_id ){
 	
 	echo json_encode($tracks);
 	
-	$file = 'playlist_' . $playlist_id . '.json';
+	$file = '../game/playlists/playlist_' . $playlist_id . '.json';
 	// Write the contents back to the file
 	file_put_contents($file, json_encode($tracks));
 
