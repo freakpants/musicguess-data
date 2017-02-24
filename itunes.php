@@ -13,17 +13,33 @@ $sth = $dbh->prepare($sql);
 $sth->execute();
 $results = $sth->fetchAll();
 
-foreach( $results as $result ){
+/* foreach( $results as $result ){
 	lookup_track_details( $result['id'] );
 	usleep(1000000);
-} 
+} */
 
 //lookup_track_details(589877709);
 
-function lookup_track_details( $track_id ){
+lookup_collection(448049357, 'ch');
+
+function lookup_collection( $collection_id , $country = "US"){
+	$url = "https://itunes.apple.com/lookup?id=" . $collection_id . "&entity=song&country=" .$country;
+	$json = file_get_contents( $url );
+	$object = json_decode( $json );
+	$counter = 0;
+	foreach($object->results as $song){
+		if( $counter > 0 ){
+			lookup_track_details( $song->trackId , $country );
+			usleep(1000000);
+		}
+		$counter++;
+	}
+}
+
+function lookup_track_details( $track_id , $country = "US" ){
 	global $dbh;
 	
-	$url = "https://itunes.apple.com/lookup?id=" . $track_id;
+	$url = "https://itunes.apple.com/lookup?id=" . $track_id . "&country=" .$country;
 	$json = file_get_contents( $url );
 	$object = json_decode( $json );
 	
@@ -85,7 +101,7 @@ function lookup_track_details( $track_id ){
 	':collectionName' => $collectionName,
 	':collectionCensoredName' => $collectionCensoredName
 	));
-}
+} 
 
 
 
