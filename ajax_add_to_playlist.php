@@ -1,16 +1,23 @@
 <?php
-
 // add track to playlist
 require("connect.php");
 
-$pw = $_POST['pw'];
+global $dbh;
+$dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 
-if( $pw !== 'Hr8q72UmMCNWc8PHm9zED9FG' ){
+
+
+$sql = "SELECT option_value FROM options WHERE option_key = 'password'";
+$stmt = $dbh->prepare($sql);
+$stmt->execute();
+$db_pw = $stmt->fetchColumn();
+
+$client_pw = $_POST['pw'];
+
+if( $db_pw !== $client_pw ){
 	die;
 }
 
-global $dbh;
-$dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 
 $sql = "SET NAMES 'utf-8'";
 $dbh->query($sql);
@@ -24,5 +31,6 @@ $sql = "INSERT INTO songs_in_playlist (track_id,service,playlist_id) VALUES(:tra
 $stmt = $dbh->prepare($sql);
 
 $stmt->execute(array(':track_id' => $track_id, ':playlist_id' => $playlist_id, ':service' => $service));
+
 
 ?>
