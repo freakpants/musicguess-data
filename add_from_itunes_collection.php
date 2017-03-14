@@ -10,7 +10,7 @@
 
 $collection = 448049357;
 $playlist = 12;
-$pw = 'Hr8q72UmMCNWc8PHm9zED9FG';
+$pw = $_GET['pw'];
 
 require("connect.php");
 
