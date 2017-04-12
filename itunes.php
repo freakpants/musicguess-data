@@ -1,6 +1,12 @@
+<head>
+<script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.6.0.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Roboto" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+</head>
+<body style="font-family:Roboto">
 <?php
-
 require("connect.php");
+require("itunes_functions.php");
 
 global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
@@ -20,90 +26,98 @@ $results = $sth->fetchAll();
 
 //lookup_track_details(589877709);
 
-lookup_collection(448049357, 'ch');
+// lookup_collection(448049357, 'ch');
 
-function lookup_collection( $collection_id , $country = "US"){
-	$url = "https://itunes.apple.com/lookup?id=" . $collection_id . "&entity=song&country=" .$country;
+
+/* attempt matching from list from db */
+
+// playlist to add the songs to
+$playlist = 13;
+
+// pw for allowing ajax to execute
+$pw = $_GET['pw'];
+
+$sql = "SELECT id, artist, title FROM lookup WHERE added = 0 ORDER BY RAND() LIMIT 6";
+$sth = $dbh->prepare($sql);
+$sth->execute();
+$results = $sth->fetchAll();
+
+echo '<style>
+table td, table th {
+    border: 1px solid black;
+}
+</style>
+';
+
+foreach( $results as $result ){
+	
+	$term = urlencode(utf8_encode($result['artist'])).'+'.urlencode(utf8_encode($result['title']));
+	$url = 'https://itunes.apple.com/search?term='.$term.'&entity=song';
+	echo '<a href="'.$url.'">'.$result['artist'].' - '.$result['title'].'</a></br>';
+	
 	$json = file_get_contents( $url );
 	$object = json_decode( $json );
+	
 	$counter = 0;
+	echo '<table style="border:1px solid black; border-collapse:collapse;"><tr><th>Artist</th><th>Song</th><th>Album</th><th>Released</th><th>Country</th><th></th><th></th></tr>';
 	foreach($object->results as $song){
 		if( $counter > 0 ){
-			lookup_track_details( $song->trackId , $country );
+			// lookup_track_details( $song->trackId , $country );
 			usleep(1000000);
 		}
 		$counter++;
-	}
-}
-
-function lookup_track_details( $track_id , $country = "US" ){
-	global $dbh;
-	
-	$url = "https://itunes.apple.com/lookup?id=" . $track_id . "&country=" .$country;
-	$json = file_get_contents( $url );
-	$object = json_decode( $json );
-	
-	$track = $object->results[0];
-	
-	$artistName = utf8_decode($track->artistName);
-	$trackName = utf8_decode($track->trackName);
-	$previewUrl = $track->previewUrl;
-	$wrapperType = $track->wrapperType;
-	$kind = $track->kind;
-	$artistId = $track->artistId;
-	$collectionId = $track->collectionId;
-	$collectionName = utf8_decode($track->collectionName);
-	$collectionCensoredName = utf8_decode($track->collectionCensoredName);
-	$trackCensoredName = utf8_decode($track->trackCensoredName);
-	$artistViewUrl = $track->artistViewUrl;
-	$collectionViewUrl = $track->collectionViewUrl;
-	$trackViewUrl = $track->trackViewUrl;
-	$artworkUrl30 = $track->artworkUrl30;
-	$artworkUrl60 = $track->artworkUrl60;
-	$artworkUrl100 = $track->artworkUrl100;
-	$collectionPrice = $track->collectionPrice;
-	$trackPrice = $track->trackPrice;
-	$releaseDate = $track->releaseDate;
-	$collectionExplicitness = $track->collectionExplicitness;
-	$trackExplicitness = $track->trackExplicitness;
-	$discCount = $track->discCount;
-	$discNumber = $track->discNumber;
-	$trackCount = $track->trackCount;
-	$trackNumber = $track->trackNumber;
-	$trackTimeMillis = $track->trackTimeMillis;
-	$country = $track->country;
-	$currency = $track->currency;
-	$primaryGenreName = $track->primaryGenreName;
-	$isStreamable = $track->isStreamable ? 1 : 0;
-	
-	if($artistId === 0 || $artistId === '' || $artistId === NULL){
-		return;
-	}
-	
-	if( $trackPrice === NULL ){
-		$trackPrice = 0;
-	}
-	
-	if( $collectionPrice === NULL ){
-		$collectionPrice = 0;
-	}
-	
-	$sql = "REPLACE INTO `itunes_tracks` (`id`, `artistName`, `trackName`, `previewUrl`, `wrapperType`, `kind`, `artistId`,`collectionId`,`collectionName`,`collectionCensoredName`, `trackCensoredName`, `artistViewUrl`,`collectionViewUrl`, `trackViewUrl`, `artworkUrl30`, `artworkUrl60`, `artworkUrl100`, `collectionPrice`, `trackPrice`, `releaseDate`, `collectionExplicitness`, `trackExplicitness`, `discCount`, `discNumber`, `trackCount`, `trackNumber`, `trackTimeMillis`, `country`, `currency`, `primaryGenreName`, `isStreamable`) VALUES ($track_id, :artistName, :trackName, '$previewUrl', '$wrapperType', '$kind', $artistId, $collectionId, :collectionName, :collectionCensoredName, :trackCensoredName, '$artistViewUrl', '$collectionViewUrl', '$trackViewUrl', '$artworkUrl30', '$artworkUrl60', '$artworkUrl100', $collectionPrice, $trackPrice, '$releaseDate', '$collectionExplicitness', '$trackExplicitness', $discCount, $discNumber, $trackCount, $trackNumber, $trackTimeMillis, '$country', '$currency', '$primaryGenreName', $isStreamable)"; 
-
-	
-	$sth = $dbh->prepare($sql);
 		
-	echo 'executing: ' . $sql . '</br>';
-	$sth->execute(array(
-	":trackName" => $trackName,
-	':artistName' => $artistName,
-	':trackCensoredName' => $trackCensoredName, 
-	':collectionName' => $collectionName,
-	':collectionCensoredName' => $collectionCensoredName
-	));
+		
+		
+		echo '<tr>
+			<th>'.$song->artistName.'</th>
+			<th>'.$song->trackName.'</th>
+			<th>'.$song->collectionName.'</th>
+			<th>'.$song->releaseDate.'</th>
+			<th>'.$song->country.'</th>
+			<th><div class="add_collection" collection_id="' . $song->collectionId . '" style="font-weight:bold;color:blue;cursor:pointer">Add Collection</div></th>
+			<th><div class="add_track" lookup_id="'.$result['id'].'" track_id="' . $song->trackId . '" style="font-weight:bold;color:blue;cursor:pointer">Add Track to Playlist</div></th>
+			</tr>';
+	}
+	echo '</table>';
 } 
-
-
-
-
 ?>
+<script type="text/javascript">
+$( document ).ready(function() {
+	
+	$( ".remove" ).click(function(element) {
+		$(element.target).parent().parent().hide();
+	});
+	
+	$( ".add_collection" ).click(function(element) {
+
+		collection_id = $(element.target).attr('collection_id');
+		$(element.target).hide();
+
+		$.ajax({ method: "POST", url: "ajax_lookup_collection.php", data: { 
+			pw: '<?= $pw ?>',
+			collection_id:collection_id,
+		} , dataType: "json" })
+			.done(function() {
+				alert("collection added");
+			});
+	});
+	
+	$( ".add_track" ).click(function(element) {
+
+		track_id = $(element.target).attr('track_id');
+		lookup_id = $(element.target).attr('lookup_id');
+		$(element.target).hide();
+
+		$.ajax({ method: "POST", url: "ajax_add_to_playlist.php", data: { 
+			pw: '<?= $pw ?>',
+			track_id:track_id,
+			playlist_id: <?= $playlist ?>,
+			service: 'itunes',
+			lookup_id: lookup_id,
+		} , dataType: "json" })
+			.done(function( msg ) {
+			});
+	});
+});
+</script>

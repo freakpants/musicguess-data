@@ -17,10 +17,10 @@ $sth->execute();
 $results = $sth->fetchAll();
 	
  foreach( $results as $playlist ){
-	create_playlist( $playlist['id']);
+	// create_playlist( $playlist['id']);
 } 
 
-// create_playlist( 9 );
+create_playlist( 13 );
 
 
 
