@@ -17,10 +17,10 @@ $sth->execute();
 $results = $sth->fetchAll();
 	
  foreach( $results as $playlist ){
-	// create_playlist( $playlist['id']);
+	create_playlist( $playlist['id']);
 } 
 
-create_playlist( 13 );
+// create_playlist( 13 );
 
 
 
@@ -42,7 +42,7 @@ function create_playlist( $playlist_id ){
 		
 		switch( $track['service'] ){
 			case 'itunes':
-				$sql = "SELECT artistName as artist, trackName as title, previewUrl as preview_url, collectionName as album, artworkUrl100 as album_art, trackViewUrl as buy_link FROM itunes_tracks WHERE id = $track_id";
+				$sql = "SELECT id as itunes_id, artistName as artist, trackName as title, previewUrl as preview_url, collectionName as album, artworkUrl100 as album_art, trackViewUrl as buy_link FROM itunes_tracks WHERE id = $track_id";
 			break;
 		}
 		
@@ -65,7 +65,7 @@ function create_playlist( $playlist_id ){
 	
 	echo json_encode($tracks);
 	
-	$file = '../game/playlists/playlist_' . $playlist_id . '.json';
+	$file = '../musicguess/game/playlists/playlist_' . $playlist_id . '.json';
 	// Write the contents back to the file
 	file_put_contents($file, json_encode($tracks));
 
