@@ -42,7 +42,7 @@ function create_playlist( $playlist_id ){
 		
 		switch( $track['service'] ){
 			case 'itunes':
-				$sql = "SELECT id as itunes_id, artistName as artist, trackName as title, previewUrl as preview_url, collectionName as album, artworkUrl100 as album_art, trackViewUrl as buy_link FROM itunes_tracks WHERE id = $track_id";
+				$sql = "SELECT 'itunes' as service, id as id, artistName as artist, trackName as title, previewUrl as preview_url, collectionName as album, artworkUrl100 as album_art, trackViewUrl as buy_link FROM itunes_tracks WHERE id = $track_id";
 			break;
 		}
 		
