@@ -26,7 +26,7 @@ $results = $sth->fetchAll();
 
 //lookup_track_details(589877709);
 
-// lookup_collection(448049357, 'ch');
+lookup_collection(1069373757, 'us');
 
 
 /* attempt matching from list from db */

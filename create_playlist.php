@@ -58,7 +58,29 @@ function create_playlist( $playlist_id ){
 			} else {
 				$results[$key] = $value;
 			}
+			// attempt to get album art from deezer
+			if ( $key === 'album' ){
+				$album_art = '';
+				$title = '';
+				$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE '%$value%' LIMIT 1";
+				$sth = $dbh->prepare($sql);
+				$sth->execute();
+				$inner_results = $sth->fetchAll();
+				foreach( $inner_results as $result ){
+					$album_art = $result['cover_xl'];
+					$title = $result['title'];
+				}
+			}
 		}
+		if( $album_art != '' ){
+			$results['album_art'] = $album_art;
+			echo '<img style="width:200px" src="'.$results['album_art'].'" /></br>';
+			echo 'Replaced album art for '.$results['artist'].' - '.$results['title'].' on album '.$results['album'].' <b>with</b> '.$title.'</br>';
+		} else {
+			echo 'Kept old album art for '.$results['artist'].' - '.$results['title'].' on album '.$results['album'].'</br>';
+		}
+		echo '</br></br>';
+		
 		
 		array_push( $tracks, $results);
 	}
