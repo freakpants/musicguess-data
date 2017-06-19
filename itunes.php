@@ -6,8 +6,8 @@
 <body style="font-family:Roboto">
 <?php
 require("connect.php");
-require("itunes_functions.php");
 
+require("itunes_functions.php");
 global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 
@@ -26,7 +26,7 @@ $results = $sth->fetchAll();
 
 //lookup_track_details(589877709);
 
-lookup_collection(1069373757, 'us');
+lookup_collection(65098581, 'au');
 
 
 /* attempt matching from list from db */
