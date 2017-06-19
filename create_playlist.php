@@ -17,10 +17,10 @@ $sth->execute();
 $results = $sth->fetchAll();
 	
  foreach( $results as $playlist ){
-	create_playlist( $playlist['id']);
+	// create_playlist( $playlist['id']);
 } 
 
-// create_playlist( 13 );
+create_playlist( 0 );
 
 
 
@@ -62,21 +62,40 @@ function create_playlist( $playlist_id ){
 			if ( $key === 'album' ){
 				$album_art = '';
 				$title = '';
-				$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE '%$value%' LIMIT 1";
+				$artist = $results['artist'];
+				$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE :value AND artist_name LIKE :artist_name LIMIT 1";
 				$sth = $dbh->prepare($sql);
-				$sth->execute();
+				$sth->execute( array(':value' => '%{$value}%', ':artist_name' => '%{$artist}%' ))	;
 				$inner_results = $sth->fetchAll();
 				foreach( $inner_results as $result ){
 					$album_art = $result['cover_xl'];
 					$title = $result['title'];
 				}
+				
+				// try again with removed extra shit
+				$title_replaced = ereg_replace(" \(Deluxe Version\)","",$value);
+
+				$sth = $dbh->prepare($sql);
+				$sth->execute( array(':value' => $title_replaced, ':artist_name' => $artist ) );
+				
+				echo 'executing sql: '.$sql.'</br></br>';
+				
+				$inner_results = $sth->fetchAll();
+				foreach( $inner_results as $result ){
+					$album_art = $result['cover_xl'];
+					$title = $result['title'];
+				}
+				
+
 			}
 		}
+		
 		if( $album_art != '' ){
 			$results['album_art'] = $album_art;
 			echo '<img style="width:200px" src="'.$results['album_art'].'" /></br>';
 			echo 'Replaced album art for '.$results['artist'].' - '.$results['title'].' on album '.$results['album'].' <b>with</b> '.$title.'</br>';
 		} else {
+			echo '<img style="width:200px" src="'.$results['album_art'].'" /></br>';
 			echo 'Kept old album art for '.$results['artist'].' - '.$results['title'].' on album '.$results['album'].'</br>';
 		}
 		echo '</br></br>';
