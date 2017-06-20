@@ -20,7 +20,7 @@ $results = $sth->§All(); */
 	//usleep(100000);
 } */
 
-$sql = "SELECT DISTINCT id FROM deezer_artists WHERE 1 ORDER BY RAND()";
+/* $sql = "SELECT DISTINCT id FROM deezer_artists WHERE 1 ORDER BY RAND()";
 $sth = $dbh->prepare($sql);
 $sth->execute();
 $results = $sth->fetchAll();
@@ -29,7 +29,7 @@ foreach( $results as $result ){
 	echo $result['id'] . '</br>';
 	lookup_artist( $result['id'] );
 	// usleep(100000);
-} 
+} */
 
 /* $sql = "SELECT id FROM deezer_albums WHERE artist_name = 'Amber'";
 $sth = $dbh->prepare($sql);
@@ -43,15 +43,15 @@ foreach( $results as $result ){
 } */
 
 
-// lookup_artist(1494500);
-// lookup_album(1008059);
+lookup_artist(1487);
+lookup_album(1430370);
 
 function save_album_details ( $album_id, $album ){
 	global $dbh;
 	
-	/* echo '<pre>';
+	echo '<pre>';
 	var_dump( $album );
-	echo '</pre>'; */
+	echo '</pre>';
 	
 	$title = utf8_decode($album->title);
 	$cover = $album->cover;
@@ -66,17 +66,19 @@ function save_album_details ( $album_id, $album ){
 	
 	$result_artist = utf8_decode($album->artist->name);
 	
-	$sql = "INSERT INTO `deezer_albums` (`id`, `title`, `cover`, `cover_small`, `cover_medium`, `cover_big`, `cover_xl`, `tracklist`, `type`) VALUES ($album_id, '$title', '$cover', '$cover_small', '$cover_medium', '$cover_big', '$cover_xl', '$tracklist', '$type') ON DUPLICATE KEY UPDATE artist_name = '$result_artist'";
+	$sql = "INSERT INTO `deezer_albums` (`id`, `title`, `cover`, `cover_small`, `cover_medium`, `cover_big`, `cover_xl`, `tracklist`, `type`, `artist_name`) VALUES ($album_id, '$title', '$cover', '$cover_small', '$cover_medium', '$cover_big', '$cover_xl', '$tracklist', '$type', '$result_artist') ON DUPLICATE KEY UPDATE artist_name = '$result_artist'";
 	$sth = $dbh->prepare($sql);
 	$sth->execute();
 
-	echo 'executing album sql. '.$sql.'</br></br>';
+	echo 'executing album 2 sql. '.$sql.'</br></br>';
 }
 
 function lookup_album( $album_id, $artist_name ){
 	global $dbh;
 
 	$url = "https://api.deezer.com/album/" . $album_id;
+	
+	echo "checking api url ".$url.' </br>';
 	$json = file_get_contents($url);
 	$object = json_decode($json);
 
@@ -168,7 +170,7 @@ function lookup_artist( $artist_id ){
 		$sth = $dbh->prepare($sql);
 		$sth->execute( array(':title' => $title, ':artist_name' => $result_artist) );
 		
-		echo 'executing album sql.'.$sql.'</br></br>';
+		echo 'executing 1 album sql.'.$sql.'</br></br>';
 	} 
 	
 	$url = "https://api.deezer.com/artist/" . $artist_id;

@@ -20,11 +20,15 @@ $results = $sth->fetchAll();
 	// create_playlist( $playlist['id']);
 } 
 
+
 create_playlist( 0 );
 
 
 
 function create_playlist( $playlist_id ){
+	
+	$kept_image = 0;
+	$replaced_image = 0;
 	
 	global $dbh;
 	
@@ -33,8 +37,6 @@ function create_playlist( $playlist_id ){
 	$sth->execute();
 	$results = $sth->fetchAll();
 	
-	
-	
 	$tracks = [];
 	foreach ($results as $track ){
 		
@@ -42,13 +44,14 @@ function create_playlist( $playlist_id ){
 		
 		switch( $track['service'] ){
 			case 'itunes':
-				$sql = "SELECT 'itunes' as service, id as id, artistName as artist, trackName as title, previewUrl as preview_url, collectionName as album, artworkUrl100 as album_art, trackViewUrl as buy_link FROM itunes_tracks WHERE id = $track_id";
+				$sql = "SELECT 'itunes' as service, id as id, artistName as artist, trackName as title, previewUrl as preview_url, collectionName as album, artworkUrl100 as album_art, trackViewUrl as buy_link, collectionId FROM itunes_tracks WHERE id = $track_id";
 			break;
 		}
 		
 		$sth = $dbh->prepare($sql);
 		$sth->execute();
 		$results = $sth->fetchAll();
+		
 		
 		foreach ( $results[0] as $key => $value) {
 			if( $key === 'artist' || $key === 'title' || $key === 'album' ){
@@ -58,15 +61,22 @@ function create_playlist( $playlist_id ){
 			} else {
 				$results[$key] = $value;
 			}
+			
+			if ( $key === 'collectionId' ){
+				echo $value.'</br>';
+			}
+			
 			// attempt to get album art from deezer
 			if ( $key === 'album' ){
 				$album_art = '';
 				$title = '';
 				$artist = $results['artist'];
-				$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE :value AND artist_name LIKE :artist_name LIMIT 1";
+				$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE CONCAT('%', :value, '%') AND artist_name LIKE CONCAT('%', :artist_name, '%') LIMIT 1";
+				
 				$sth = $dbh->prepare($sql);
-				$sth->execute( array(':value' => '%{$value}%', ':artist_name' => '%{$artist}%' ))	;
+				$sth->execute( array(':value' => $value, ':artist_name' => $artist ) );
 				$inner_results = $sth->fetchAll();
+				
 				foreach( $inner_results as $result ){
 					$album_art = $result['cover_xl'];
 					$title = $result['title'];
@@ -74,27 +84,48 @@ function create_playlist( $playlist_id ){
 				
 				// try again with removed extra shit
 				$title_replaced = ereg_replace(" \(Deluxe Version\)","",$value);
-
+				$title_replaced = ereg_replace(" - Single","",$title_replaced);
+				$title_replaced = ereg_replace(" \(Version 1\)","",$title_replaced);
+				$title_replaced = ereg_replace(" \(Deluxe\)","",$title_replaced);
+				$title_replaced = ereg_replace(" - EP","",$title_replaced);
+				$title_replaced = ereg_replace(" \(Special Edition\)","",$title_replaced);
+				$title_replaced = ereg_replace(" - The Hits","",$title_replaced);
+				$title_replaced = ereg_replace("\(Remixes\) \[feat. Emma Lanford\]","",$title_replaced);
+				$title_replaced = ereg_replace(" \(Remastered\)","",$title_replaced);
+				$title_replaced = ereg_replace(" \(feat. Janet Devlin\)","",$title_replaced);
+				$title_replaced = ereg_replace(" \(Bonus Track Version\)","",$title_replaced);
+				$title_replaced = ereg_replace(" \(Deluxe Edition\)","",$title_replaced);
+				$title_replaced = ereg_replace(" \+","",$title_replaced);
+				
+				echo $title_replaced.'</br>';
+				
 				$sth = $dbh->prepare($sql);
 				$sth->execute( array(':value' => $title_replaced, ':artist_name' => $artist ) );
-				
-				echo 'executing sql: '.$sql.'</br></br>';
 				
 				$inner_results = $sth->fetchAll();
 				foreach( $inner_results as $result ){
 					$album_art = $result['cover_xl'];
 					$title = $result['title'];
 				}
-				
-
+			}
+			if ( $key === "collectionId"){
+				$sql = "SELECT image FROM itunes_album_image_replacements WHERE itunes_collection_id = $value";
+				$sth = $dbh->prepare($sql);
+				$sth->execute();
+				$inner_results = $sth->fetchAll();
+				foreach( $inner_results as $result ){
+					$album_art = $result['image'];
+				}
 			}
 		}
 		
 		if( $album_art != '' ){
+			$replaced_image++;
 			$results['album_art'] = $album_art;
 			echo '<img style="width:200px" src="'.$results['album_art'].'" /></br>';
 			echo 'Replaced album art for '.$results['artist'].' - '.$results['title'].' on album '.$results['album'].' <b>with</b> '.$title.'</br>';
 		} else {
+			$kept_image++;
 			echo '<img style="width:200px" src="'.$results['album_art'].'" /></br>';
 			echo 'Kept old album art for '.$results['artist'].' - '.$results['title'].' on album '.$results['album'].'</br>';
 		}
@@ -104,12 +135,16 @@ function create_playlist( $playlist_id ){
 		array_push( $tracks, $results);
 	}
 	
-	echo json_encode($tracks);
+	// echo json_encode($tracks);
 	
 	$file = '../musicguess/game/playlists/playlist_' . $playlist_id . '.json';
 	// Write the contents back to the file
 	file_put_contents($file, json_encode($tracks));
+	
+	echo '</br>'.$replaced_image.' replaced, '.$kept_image.' kept</br>';
 
 }
+
+
 
 ?>
