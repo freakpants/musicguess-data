@@ -21,7 +21,7 @@ $results = $sth->fetchAll();
 } 
 
 
-create_playlist( 0 );
+create_playlist( 12 );
 
 
 
@@ -70,7 +70,7 @@ function create_playlist( $playlist_id ){
 			if ( $key === 'album' ){
 				$album_art = '';
 				$title = '';
-				$artist = $results['artist'];
+				$artist = utf8_decode($results['artist']);
 				$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE CONCAT('%', :value, '%') AND artist_name LIKE CONCAT('%', :artist_name, '%') LIMIT 1";
 				
 				$sth = $dbh->prepare($sql);
