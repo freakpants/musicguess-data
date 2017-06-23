@@ -43,8 +43,8 @@ foreach( $results as $result ){
 } */
 
 
-lookup_artist(1487);
-lookup_album(1430370);
+lookup_artist(477734);
+lookup_album(12657886);
 
 function save_album_details ( $album_id, $album ){
 	global $dbh;
