@@ -26,13 +26,13 @@ $results = $sth->fetchAll();
 
 //lookup_track_details(589877709);
 
-lookup_collection(1233502263, 'us');
+lookup_collection(473399692, 'gb');
 
 
 /* attempt matching from list from db */
 
 // playlist to add the songs to
-$playlist = 13;
+$playlist = 0	;
 
 // pw for allowing ajax to execute
 $pw = $_GET['pw'];

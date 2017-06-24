@@ -21,7 +21,7 @@ $results = $sth->fetchAll();
 } 
 
 
-create_playlist( 12 );
+create_playlist( 0 );
 
 
 
@@ -83,21 +83,31 @@ function create_playlist( $playlist_id ){
 				}
 				
 				// try again with removed extra shit
-				$title_replaced = ereg_replace(" \(Deluxe Version\)","",$value);
+				$title_replaced = ereg_replace(" \(.*\ Version\)","",$value);
 				$title_replaced = ereg_replace(" - Single","",$title_replaced);
 				$title_replaced = ereg_replace(" \(Version 1\)","",$title_replaced);
 				$title_replaced = ereg_replace(" \(Deluxe\)","",$title_replaced);
 				$title_replaced = ereg_replace(" - EP","",$title_replaced);
-				$title_replaced = ereg_replace(" \(Special Edition\)","",$title_replaced);
 				$title_replaced = ereg_replace(" - The Hits","",$title_replaced);
 				$title_replaced = ereg_replace("\(Remixes\) \[feat. Emma Lanford\]","",$title_replaced);
 				$title_replaced = ereg_replace(" \(Remastered\)","",$title_replaced);
-				$title_replaced = ereg_replace(" \(feat. Janet Devlin\)","",$title_replaced);
 				$title_replaced = ereg_replace(" \(Bonus Track Version\)","",$title_replaced);
-				$title_replaced = ereg_replace(" \(Deluxe Edition\)","",$title_replaced);
 				$title_replaced = ereg_replace(" \+","",$title_replaced);
+				$title_replaced = ereg_replace(" \(Remixes\)","",$title_replaced);
+				$title_replaced = ereg_replace(" \[Remastered\]","",$title_replaced);
+				$title_replaced = ereg_replace(" \(Flashdance\)","",$title_replaced);
+				$title_replaced = ereg_replace(" \[Remixes\]","",$title_replaced);
+				$title_replaced = ereg_replace(" \[Radio Edit\]","",$title_replaced);
+				$title_replaced = ereg_replace(" \(feat\.\ .*\)","",$title_replaced);
+				$title_replaced = ereg_replace(" \[feat\.\ .*\]","",$title_replaced);
+				$title_replaced = ereg_replace(" \(.* [Ee]dition\)","",$title_replaced);
+				$title_replaced = ereg_replace(" - .*\ Edition","",$title_replaced);
+				$title_replaced = ereg_replace(" \(.* Edits)","",$title_replaced);
+				$title_replaced = ereg_replace(" \[.*\]","",$title_replaced);
+				
 				
 				echo $title_replaced.'</br>';
+				echo 'song id: '.$results['id'].'</br>';
 				
 				$sth = $dbh->prepare($sql);
 				$sth->execute( array(':value' => $title_replaced, ':artist_name' => $artist ) );
