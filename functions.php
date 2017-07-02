@@ -13,8 +13,6 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$sth->execute( array(':title' => $title, ':artist_name' => $artist ) );
 	$inner_results = $sth->fetchAll();
 	
-	echo 'function called</br>';
-	
 	foreach( $inner_results as $result ){
 		$album_art = $result['cover_xl'];
 		$title = $result['title'];
