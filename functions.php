@@ -5,12 +5,12 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	global $dbh;
 	
 	$artist = utf8_decode($artist);
-	$title = utf8_decode($title);
+	$original_title = utf8_decode($title);
 	
 	$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE CONCAT('%', :title, '%') AND artist_name LIKE CONCAT('%', :artist_name, '%') LIMIT 1";
 	
 	$sth = $dbh->prepare($sql);
-	$sth->execute( array(':title' => $title, ':artist_name' => $artist ) );
+	$sth->execute( array(':title' => $original_title, ':artist_name' => $artist ) );
 	$inner_results = $sth->fetchAll();
 	
 	foreach( $inner_results as $result ){
@@ -19,7 +19,7 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	}
 	
 	// try again with removed extra shit
-	$title_replaced = ereg_replace(" \(.*\ Version\)","",$title);
+	$title_replaced = ereg_replace(" \(.*\ Version\)","",$original_title);
 	$title_replaced = ereg_replace(" - Single","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Version 1\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Deluxe\)","",$title_replaced);
@@ -41,6 +41,10 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = ereg_replace(" \(.* Edits)","",$title_replaced);
 	$title_replaced = ereg_replace(" \[.*\]","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Original Mix\)","",$title_replaced);
+	$title_replaced = ereg_replace("\.\.\.","",$title_replaced);
+	$title_replaced = ereg_replace(" Live","",$title_replaced);
+	
+	echo 'replaced title:'.$title_replaced.'</br>';
 	
 	$sth = $dbh->prepare($sql);
 	$sth->execute( array(':title' => $title_replaced, ':artist_name' => $artist ) );
