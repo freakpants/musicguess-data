@@ -63,7 +63,11 @@ function create_playlist( $playlist_id ){
 			}
 			
 			if ( $key === 'collectionId' ){
-				echo $value.'</br>';
+				echo 'Album collectionId:'.$value.'</br>';
+			}
+			
+			if ( $key === 'id' ){
+				echo 'Track Id:'.$value.'</br>';
 			}
 		}
 		
