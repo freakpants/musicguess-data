@@ -3,6 +3,7 @@
 // output a playlist in json format
 
 require("connect.php");
+require("functions.php");
 
 global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
@@ -22,7 +23,6 @@ $results = $sth->fetchAll();
 
 
 create_playlist( 0 );
-
 
 
 function create_playlist( $playlist_id ){
@@ -65,69 +65,10 @@ function create_playlist( $playlist_id ){
 			if ( $key === 'collectionId' ){
 				echo $value.'</br>';
 			}
-			
-			// attempt to get album art from deezer
-			if ( $key === 'album' ){
-				$album_art = '';
-				$title = '';
-				$artist = utf8_decode($results['artist']);
-				$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE CONCAT('%', :value, '%') AND artist_name LIKE CONCAT('%', :artist_name, '%') LIMIT 1";
-				
-				$sth = $dbh->prepare($sql);
-				$sth->execute( array(':value' => $value, ':artist_name' => $artist ) );
-				$inner_results = $sth->fetchAll();
-				
-				foreach( $inner_results as $result ){
-					$album_art = $result['cover_xl'];
-					$title = $result['title'];
-				}
-				
-				// try again with removed extra shit
-				$title_replaced = ereg_replace(" \(.*\ Version\)","",$value);
-				$title_replaced = ereg_replace(" - Single","",$title_replaced);
-				$title_replaced = ereg_replace(" \(Version 1\)","",$title_replaced);
-				$title_replaced = ereg_replace(" \(Deluxe\)","",$title_replaced);
-				$title_replaced = ereg_replace(" - EP","",$title_replaced);
-				$title_replaced = ereg_replace(" - The Hits","",$title_replaced);
-				$title_replaced = ereg_replace("\(Remixes\) \[feat. Emma Lanford\]","",$title_replaced);
-				$title_replaced = ereg_replace(" \(Remastered\)","",$title_replaced);
-				$title_replaced = ereg_replace(" \(Bonus Track Version\)","",$title_replaced);
-				$title_replaced = ereg_replace(" \+","",$title_replaced);
-				$title_replaced = ereg_replace(" \(Remixes\)","",$title_replaced);
-				$title_replaced = ereg_replace(" \[Remastered\]","",$title_replaced);
-				$title_replaced = ereg_replace(" \(Flashdance\)","",$title_replaced);
-				$title_replaced = ereg_replace(" \[Remixes\]","",$title_replaced);
-				$title_replaced = ereg_replace(" \[Radio Edit\]","",$title_replaced);
-				$title_replaced = ereg_replace(" \(feat\.\ .*\)","",$title_replaced);
-				$title_replaced = ereg_replace(" \[feat\.\ .*\]","",$title_replaced);
-				$title_replaced = ereg_replace(" \(.* [Ee]dition\)","",$title_replaced);
-				$title_replaced = ereg_replace(" - .*\ Edition","",$title_replaced);
-				$title_replaced = ereg_replace(" \(.* Edits)","",$title_replaced);
-				$title_replaced = ereg_replace(" \[.*\]","",$title_replaced);
-				
-				
-				echo $title_replaced.'</br>';
-				echo 'song id: '.$results['id'].'</br>';
-				
-				$sth = $dbh->prepare($sql);
-				$sth->execute( array(':value' => $title_replaced, ':artist_name' => $artist ) );
-				
-				$inner_results = $sth->fetchAll();
-				foreach( $inner_results as $result ){
-					$album_art = $result['cover_xl'];
-					$title = $result['title'];
-				}
-			}
-			if ( $key === "collectionId"){
-				$sql = "SELECT image FROM itunes_album_image_replacements WHERE itunes_collection_id = $value";
-				$sth = $dbh->prepare($sql);
-				$sth->execute();
-				$inner_results = $sth->fetchAll();
-				foreach( $inner_results as $result ){
-					$album_art = $result['image'];
-				}
-			}
 		}
+		
+		// attempt to get album art from deezer
+		$album_art = get_album_art($results['artist'],$results['album'],$results['collectionId']);
 		
 		if( $album_art != '' ){
 			$replaced_image++;

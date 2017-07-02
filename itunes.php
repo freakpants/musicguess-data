@@ -24,9 +24,8 @@ $results = $sth->fetchAll();
 	usleep(1000000);
 } */
 
-//lookup_track_details(589877709);
-
-lookup_collection(473399692, 'gb');
+lookup_collection(424149647, 'gb');
+// lookup_track_details(589877709);
 
 
 /* attempt matching from list from db */

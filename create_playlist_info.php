@@ -2,6 +2,7 @@
 // compile a list of available playlists with additional info in json format
 	
 require("connect.php");
+require("functions.php");
 
 global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
@@ -50,7 +51,7 @@ function create_playlist_info(){
 			
 			switch( $track['service'] ){
 				case 'itunes':
-					$sql = "SELECT artworkUrl100 as album_art FROM itunes_tracks WHERE id = $id";
+					$sql = "SELECT collectionName, collectionId, artistName FROM itunes_tracks WHERE id = $id";
 				break;
 			}
 
@@ -58,7 +59,9 @@ function create_playlist_info(){
 			$sth->execute();
 			$results = $sth->fetch();
 			
-			array_push( $playlist_object->album_art, $results['album_art']);
+			$album_art = get_album_art($results['artistName'],$results['collectionName'],$results['collectionId']);
+			
+			array_push( $playlist_object->album_art, $album_art);
 			
 		}
 		
