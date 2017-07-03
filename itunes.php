@@ -24,14 +24,14 @@ $results = $sth->fetchAll();
 	usleep(1000000);
 } */
 
-lookup_collection(254328852, 'us');
+// lookup_collection(692202526, 'au');
 // lookup_track_details(589877709);
 
 
 /* attempt matching from list from db */
 
 // playlist to add the songs to
-$playlist = 0	;
+$playlist = 9;
 
 // pw for allowing ajax to execute
 $pw = $_GET['pw'];
