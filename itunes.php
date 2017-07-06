@@ -24,19 +24,20 @@ $results = $sth->fetchAll();
 	usleep(1000000);
 } */
 
-lookup_collection(195775609, 'us');
+lookup_collection(930338382, 'us');
+
 // lookup_track_details(589877709);
 
 
 /* attempt matching from list from db */
 
 // playlist to add the songs to
-$playlist = 11;
+$playlist = 2;
 
 // pw for allowing ajax to execute
 $pw = $_GET['pw'];
 
-$sql = "SELECT id, artist, title FROM lookup WHERE added = 0 ORDER BY RAND() LIMIT 6";
+// $sql = "SELECT id, artist, title FROM lookup WHERE added = 0 ORDER BY RAND() LIMIT 10";
 $sth = $dbh->prepare($sql);
 $sth->execute();
 $results = $sth->fetchAll();

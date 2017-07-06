@@ -1,11 +1,19 @@
 <?php
 function lookup_collection( $collection_id , $country = "US"){
+	echo 'is happening';
 	$url = "https://itunes.apple.com/lookup?id=" . $collection_id . "&entity=song&country=" .$country;
+	
 	$json = file_get_contents( $url );
 	$object = json_decode( $json );
 	$counter = 0;
+	
+	echo '<pre>';
+	var_dump($object);
+	echo '</pre>';
+	
 	foreach($object->results as $song){
 		if( $counter > 0 ){
+			
 			lookup_track_details( $song->trackId , $country );
 			usleep(1000000);
 		}
