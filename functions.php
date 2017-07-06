@@ -43,6 +43,12 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = ereg_replace(" \(Original Mix\)","",$title_replaced);
 	$title_replaced = ereg_replace("\.\.\.","",$title_replaced);
 	$title_replaced = ereg_replace(" Live","",$title_replaced);
+	$title_replaced = ereg_replace(" \(Bonus Tracks\)","",$title_replaced);
+	$title_replaced = ereg_replace(" \(Remasteris.*\)","",$title_replaced);
+	$title_replaced = ereg_replace(" \(Original Motion Picture Soundtrack\)","",$title_replaced);
+	 
+	
+	 
 	
 	echo 'replaced title:'.$title_replaced.'</br>';
 	
