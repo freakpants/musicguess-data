@@ -22,7 +22,7 @@ $results = $sth->fetchAll();
 } 
 
 
-create_playlist( 9 );
+create_playlist( 10 );
 
 
 function create_playlist( $playlist_id ){
