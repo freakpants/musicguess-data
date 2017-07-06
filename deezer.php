@@ -43,7 +43,7 @@ foreach( $results as $result ){
 } */
 
 
-lookup_album(114805);
+lookup_album(1422575);
 
 function save_album_details ( $album_id, $album ){
 	global $dbh;
@@ -65,9 +65,9 @@ function save_album_details ( $album_id, $album ){
 	
 	$result_artist = utf8_decode($album->artist->name);
 	
-	$sql = "INSERT INTO `deezer_albums` (`id`, `title`, `cover`, `cover_small`, `cover_medium`, `cover_big`, `cover_xl`, `tracklist`, `type`, `artist_name`) VALUES ($album_id, :album_title, '$cover', '$cover_small', '$cover_medium', '$cover_big', '$cover_xl', '$tracklist', '$type', '$result_artist') ON DUPLICATE KEY UPDATE artist_name = '$result_artist'";
+	$sql = "INSERT INTO `deezer_albums` (`id`, `title`, `cover`, `cover_small`, `cover_medium`, `cover_big`, `cover_xl`, `tracklist`, `type`, `artist_name`) VALUES ($album_id, :album_title, '$cover', '$cover_small', '$cover_medium', '$cover_big', '$cover_xl', '$tracklist', '$type', :artist_name) ON DUPLICATE KEY UPDATE artist_name = :artist_name";
 	$sth = $dbh->prepare($sql);
-	$sth->execute(array(":album_title" => $title));
+	$sth->execute(array(":album_title" => $title, ":artist_name" => $result_artist));
 
 	echo 'executing album 2 sql. '.$sql.'</br></br>';
 }
