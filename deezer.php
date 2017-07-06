@@ -44,7 +44,6 @@ foreach( $results as $result ){
 
 // lookup_album();
 
-
 function save_album_details ( $album_id, $album ){
 	global $dbh;
 	

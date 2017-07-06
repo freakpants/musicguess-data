@@ -21,18 +21,19 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	// try again with removed extra shit
 	$title_replaced = ereg_replace(" \(.*\ Version\)","",$original_title);
 	$title_replaced = ereg_replace(" - Single","",$title_replaced);
+	$title_replaced = ereg_replace(" \(Single\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Version 1\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Deluxe\)","",$title_replaced);
 	$title_replaced = ereg_replace(" - EP","",$title_replaced);
 	$title_replaced = ereg_replace(" - The Hits","",$title_replaced);
-	$title_replaced = ereg_replace("\(Remixes\) \[feat. Emma Lanford\]","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Remastered\)","",$title_replaced);
+	$title_replaced = ereg_replace(" \[feat. Emma Lanford\]","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Bonus Track Version\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \+","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Remixes\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \[Remastered\]","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Flashdance\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \[Remixes\]","",$title_replaced);
+	$title_replaced = ereg_replace(" \(.*Remixes.*\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \[Radio Edit\]","",$title_replaced);
 	$title_replaced = ereg_replace(" \(feat\.\ .*\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \[feat\.\ .*\]","",$title_replaced);
@@ -44,8 +45,9 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = ereg_replace("\.\.\.","",$title_replaced);
 	$title_replaced = ereg_replace(" Live","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Bonus Tracks\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Remasteris.*\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Original Motion Picture Soundtrack\)","",$title_replaced);
+	$title_replaced = ereg_replace(" \(Remaster.*\)","",$title_replaced);
+	$title_replaced = ereg_replace(" \(.*Motion Picture.*\)","",$title_replaced);
+	$title_replaced = ereg_replace(" \(.*Soundtrack.*\)","",$title_replaced);
 	 
 	
 	 
