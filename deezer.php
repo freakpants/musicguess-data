@@ -42,8 +42,8 @@ foreach( $results as $result ){
 	// usleep(100000);
 } */
 
+// lookup_album();
 
-lookup_album(1422575);
 
 function save_album_details ( $album_id, $album ){
 	global $dbh;
@@ -89,10 +89,7 @@ function lookup_album( $album_id, $artist_name ){
 	
 	/* echo '<pre>';
 	var_dump($object);
-	echo '</pre>'; */
-	
-	$sth->execute(); 
-	
+	*/
 }
 
 function save_track_to_db( $track, $tracklist = '', $album_id = '' ){
