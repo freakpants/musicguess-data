@@ -4,6 +4,8 @@
 function get_album_art($artist = '', $title = '', $collectionId = 0){
 	global $dbh;
 	
+	
+	$album_art = '';
 	$artist = utf8_decode($artist);
 	$original_title = utf8_decode($title);
 	
@@ -19,39 +21,47 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	}
 	
 	// try again with removed extra shit
-	$title_replaced = ereg_replace(" \(.*\ Version\)","",$original_title);
-	$title_replaced = ereg_replace(" - Single","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Single\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Version 1\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Deluxe\)","",$title_replaced);
-	$title_replaced = ereg_replace(" - EP","",$title_replaced);
-	$title_replaced = ereg_replace(" - The Hits","",$title_replaced);
-	$title_replaced = ereg_replace(" \[feat. Emma Lanford\]","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Bonus Track Version\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \+","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Remixes\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \[Remastered\]","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Flashdance\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \[Remixes\]","",$title_replaced);
-	$title_replaced = ereg_replace(" \(.*Remixes.*\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \[Radio Edit\]","",$title_replaced);
-	$title_replaced = ereg_replace(" \(feat\.\ .*\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \[feat\.\ .*\]","",$title_replaced);
-	$title_replaced = ereg_replace(" \(.* [Ee]dition\)","",$title_replaced);
-	$title_replaced = ereg_replace(" - .*\ Edition","",$title_replaced);
-	$title_replaced = ereg_replace(" \(.* Edits)","",$title_replaced);
-	$title_replaced = ereg_replace(" \[.*\]","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Original Mix\)","",$title_replaced);
-	$title_replaced = ereg_replace("\.\.\.","",$title_replaced);
-	$title_replaced = ereg_replace(" Live","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Live\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Bonus Tracks\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Remaster.*\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(.*Motion Picture.*\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(.*Soundtrack.*\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Re-Recorded\)","",$title_replaced);
-	$title_replaced = ereg_replace(" \(Jubil.*umsedition\)","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.* Version\)/","",$original_title);
+	$title_replaced = preg_replace("/ \[.* Version\]/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.* [eE]dition\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.* Editon\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ - .*\ Edition/","",$title_replaced);
+	$title_replaced = preg_replace("/ - EP/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Live\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ - Single/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Single\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \[Remastered\]/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Remastered\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Remastered .*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Remaster.*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Jubil.*umsedition\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Flashdance\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Version 1\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Deluxe\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Remixes\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \[Remixes\]/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.*Remixes.*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(feat\.\ .*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \[feat\.\ .*\]/","",$title_replaced);
+	$title_replaced = preg_replace("/ \[.* Edit\]/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.* Edits\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \+/","",$title_replaced);
+	$title_replaced = preg_replace("/\.\.\./","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.*Soundtrack.*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Re-Recorded\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(Bonus.*\)/","",$title_replaced);
 	
+	/* 
+	$title_replaced = preg_replace(" - The Hits","",$title_replaced);
+	$title_replaced = preg_replace(" \[feat. Emma Lanford\]","",$title_replaced);
+	$title_replaced = preg_replace(" \(Bonus Track Version\)","",$title_replaced);
+	$title_replaced = preg_replace(" \[feat\.\ .*\]","",$title_replaced);
+	$title_replaced = preg_replace(" \(.* [Ee]dition\)","",$title_replaced);
+	$title_replaced = preg_replace(" \[.*\]","",$title_replaced);
+	$title_replaced = preg_replace(" \(Original Mix\)","",$title_replaced);
+	$title_replaced = preg_replace(" Live","",$title_replaced);
+	$title_replaced = preg_replace(" \(.*Motion Picture.*\)","",$title_replaced);
+	 */
 	
 	echo 'replaced title:'.$title_replaced.'</br>';
 	
@@ -74,7 +84,7 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	
 	echo 'album art:'.$album_art.'</br>';
 	
-	return $album_art;
+	return array('album_art' => $album_art, 'title' => $title_replaced);
 } 			
 	
 
