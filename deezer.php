@@ -42,7 +42,7 @@ foreach( $results as $result ){
 	// usleep(100000);
 } */
 
-// lookup_album();
+lookup_album(14229788);
 
 function save_album_details ( $album_id, $album ){
 	global $dbh;

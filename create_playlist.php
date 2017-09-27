@@ -1,4 +1,6 @@
 <?php
+
+error_reporting(E_ALL);
 	
 // output a playlist in json format
 
@@ -22,7 +24,7 @@ $results = $sth->fetchAll();
 } 
 
 
-create_playlist( 2 );
+create_playlist( 12 );
 
 
 function create_playlist( $playlist_id ){
@@ -72,7 +74,9 @@ function create_playlist( $playlist_id ){
 		}
 		
 		// attempt to get album art from deezer
-		$album_art = get_album_art($results['artist'],$results['album'],$results['collectionId']);
+		$album_data = get_album_art($results['artist'],$results['album'],$results['collectionId']);
+		$album_art = $album_data['album_art'];
+		$title = $album_data['title'];
 		
 		if( $album_art != '' ){
 			$replaced_image++;
