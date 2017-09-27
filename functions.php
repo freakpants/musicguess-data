@@ -44,13 +44,14 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = ereg_replace(" \(Original Mix\)","",$title_replaced);
 	$title_replaced = ereg_replace("\.\.\.","",$title_replaced);
 	$title_replaced = ereg_replace(" Live","",$title_replaced);
+	$title_replaced = ereg_replace(" \(Live\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Bonus Tracks\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \(Remaster.*\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \(.*Motion Picture.*\)","",$title_replaced);
 	$title_replaced = ereg_replace(" \(.*Soundtrack.*\)","",$title_replaced);
-	 
+	$title_replaced = ereg_replace(" \(Re-Recorded\)","",$title_replaced);
+	$title_replaced = ereg_replace(" \(Jubil.*umsedition\)","",$title_replaced);
 	
-	 
 	
 	echo 'replaced title:'.$title_replaced.'</br>';
 	
