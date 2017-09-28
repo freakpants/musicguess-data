@@ -59,9 +59,9 @@ function create_playlist_info(){
 			$sth->execute();
 			$results = $sth->fetch();
 			
-			$album_art = get_album_art(utf8_encode($results['artistName']),utf8_encode($results['collectionName']),$results['collectionId']);
+			$info = get_album_art(utf8_encode($results['artistName']),utf8_encode($results['collectionName']),$results['collectionId']);
 			
-			array_push( $playlist_object->album_art, $album_art);
+			array_push( $playlist_object->album_art, $info['album_art']);
 			
 		}
 		
