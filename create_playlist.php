@@ -24,7 +24,7 @@ $results = $sth->fetchAll();
 } 
 
 
-create_playlist( 12 );
+create_playlist( $_GET['playlist_id'] );
 
 
 function create_playlist( $playlist_id ){
