@@ -50,6 +50,10 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = preg_replace("/ \(.*Soundtrack.*\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(Re-Recorded\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(Bonus.*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ 2008/","",$title_replaced);
+	$title_replaced = preg_replace("/".$artist." - /","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.*Anthem.*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.*Mixed.*\)/","",$title_replaced);
 	
 	/* 
 	$title_replaced = preg_replace(" - The Hits","",$title_replaced);

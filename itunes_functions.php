@@ -7,9 +7,9 @@ function lookup_collection( $collection_id , $country = "US"){
 	$object = json_decode( $json );
 	$counter = 0;
 	
-	echo '<pre>';
+	/* echo '<pre>';
 	var_dump($object);
-	echo '</pre>';
+	echo '</pre>'; */
 	
 	foreach($object->results as $song){
 		if( $counter > 0 ){
