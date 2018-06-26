@@ -19,14 +19,20 @@ $sth = $dbh->prepare($sql);
 $sth->execute();
 $results = $sth->fetchAll();
 
+$sql = "SELECT DISTINCT track_id, itunes_tracks.country  FROM songs_in_playlist LEFT JOIN itunes_tracks ON songs_in_playlist.track_id = itunes_tracks.id WHERE `previewUrl` LIKE '%http:%' ORDER BY RAND() LIMIT 82";
+$sth = $dbh->prepare($sql);
+$sth->execute();
+$results = $sth->fetchAll();
+
+
 /* foreach( $results as $result ){
-	lookup_track_details( $result['id'] );
+	lookup_track_details( $result['track_id'], $result['country'] );
 	usleep(1000000);
 } */
 
-lookup_collection(930338382, 'us');
+lookup_collection(1081942885, 'de');
 
-// lookup_track_details(589877709);
+// lookup_track_details(62983);
 
 
 /* attempt matching from list from db */

@@ -7,9 +7,9 @@ function lookup_collection( $collection_id , $country = "US"){
 	$object = json_decode( $json );
 	$counter = 0;
 	
-	/* echo '<pre>';
-	var_dump($object);
-	echo '</pre>'; */
+	echo '<pre>';
+	var_dump($url);
+	echo '</pre>'; 
 	
 	foreach($object->results as $song){
 		if( $counter > 0 ){
@@ -24,11 +24,72 @@ function lookup_collection( $collection_id , $country = "US"){
 function lookup_track_details( $track_id , $country = "US" ){
 	global $dbh;
 	
+	switch($country){
+		case 'NZL':
+			$country = 'NZ';
+		break;
+		case 'AUS':
+			$country = 'AU';
+		break;
+		case 'USA':
+			$country = 'US';
+		break;
+		case 'GBR':
+			$country = 'GB';
+		break;
+		case 'CAN':
+			$country = 'CA';
+		break;
+		case 'CHE':
+			$country = 'CH';
+		break;
+		case 'BLZ':
+			$country = 'BZ';
+		break;
+		case 'MNG':
+			$country = 'MN';
+		break;
+		case 'MLT':
+			$country = 'MT';
+		break;
+		case 'FIN':
+			$country = 'FI';
+		break;
+		case 'DEU':
+			$country = 'DE';
+		break;	
+		case 'PHL':
+			$country = 'PH';
+		break;	
+		case 'POL':
+			$country = 'PL';
+		break;		
+		case 'AUT':
+			$country = 'AT';
+		break;		
+		case 'HKG':
+			$country = 'HK';
+		break;	
+	}
+	
+	/*
+		case '':
+			$country = '';
+		break;
+		
+	*/
+	
 	$url = "https://itunes.apple.com/lookup?id=" . $track_id . "&country=" .$country;
 	$json = file_get_contents( $url );
 	$object = json_decode( $json );
 	
+	echo 'url: '.$url.'</br>';
+	echo 'country: '.$country.'</br>';
+	
 	$track = $object->results[0];
+	echo '<pre>';
+	var_dump($track);
+	echo '</pre>';
 	
 	$artistName = utf8_decode($track->artistName);
 	$trackName = utf8_decode($track->trackName);
