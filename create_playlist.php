@@ -34,7 +34,7 @@ function create_playlist( $playlist_id ){
 	
 	global $dbh;
 	
-	$sql = "SELECT track_id, service FROM songs_in_playlist WHERE playlist_id = $playlist_id";
+	$sql = "SELECT track_id, service FROM songs_in_playlist WHERE playlist_id = $playlist_id ORDER by track_id ASC";
 	$sth = $dbh->prepare($sql);
 	$sth->execute();
 	$results = $sth->fetchAll();
@@ -46,7 +46,7 @@ function create_playlist( $playlist_id ){
 		
 		switch( $track['service'] ){
 			case 'itunes':
-				$sql = "SELECT 'itunes' as service, id as id, artistName as artist, trackName as title, previewUrl as preview_url, collectionName as album, artworkUrl100 as album_art, trackViewUrl as buy_link, collectionId FROM itunes_tracks WHERE id = $track_id";
+				$sql = "SELECT 'itunes' as service, id as id, artistName as artist, trackName as title, previewUrl as preview_url, collectionName as album, artworkUrl100 as album_art, trackViewUrl as buy_link, collectionId FROM itunes_tracks WHERE id = $track_id  ";
 			break;
 		}
 		
