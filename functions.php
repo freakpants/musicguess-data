@@ -56,6 +56,8 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = preg_replace("/ \(.*Mixed.*\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(.*Reissue.*\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(.*Expanded.*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.*digitally remastered.*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.*Opera Version.*\)/","",$title_replaced);
 	
 	/* 
 	$title_replaced = preg_replace(" - The Hits","",$title_replaced);
