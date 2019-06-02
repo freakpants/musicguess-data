@@ -71,6 +71,10 @@ function create_playlist_info(){
 	
 	echo json_encode($array_of_playlists);
 
+	$file = '../musicguess/game/playlists/playlist_info.json';
+	// Write the contents back to the file
+	file_put_contents($file, json_encode($tracks));
+	
 }
 
 	
