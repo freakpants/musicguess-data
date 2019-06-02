@@ -42,7 +42,7 @@ foreach( $results as $result ){
 	// usleep(100000);
 } */
 
-lookup_album(14229788);
+lookup_album(88591);
 
 function save_album_details ( $album_id, $album ){
 	global $dbh;
@@ -51,7 +51,7 @@ function save_album_details ( $album_id, $album ){
 	var_dump( $album );
 	echo '</pre>';
 	
-	$title = utf8_decode($album->title);
+	$title = $album->title;
 	$cover = $album->cover;
 	$cover_small = $album->cover_small;
 	$cover_medium = $album->cover_medium;
@@ -62,7 +62,7 @@ function save_album_details ( $album_id, $album ){
 	} 
 	$type = $album->type;
 	
-	$result_artist = utf8_decode($album->artist->name);
+	$result_artist = $album->artist->name;
 	
 	$sql = "INSERT INTO `deezer_albums` (`id`, `title`, `cover`, `cover_small`, `cover_medium`, `cover_big`, `cover_xl`, `tracklist`, `type`, `artist_name`) VALUES ($album_id, :album_title, '$cover', '$cover_small', '$cover_medium', '$cover_big', '$cover_xl', '$tracklist', '$type', :artist_name) ON DUPLICATE KEY UPDATE artist_name = :artist_name";
 	$sth = $dbh->prepare($sql);
@@ -71,7 +71,7 @@ function save_album_details ( $album_id, $album ){
 	echo 'executing album 2 sql. '.$sql.'</br></br>';
 }
 
-function lookup_album( $album_id, $artist_name ){
+function lookup_album( $album_id ){
 	global $dbh;
 
 	$url = "https://api.deezer.com/album/" . $album_id;

@@ -1,5 +1,5 @@
 <?php
-// helper functions that are used by multiple filesize
+// helper functions that are used by multiple files
 
 function get_album_art($artist = '', $title = '', $collectionId = 0){
 	global $dbh;
@@ -9,7 +9,11 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$artist = utf8_decode($artist);
 	$original_title = utf8_decode($title);
 	
+	
+	
 	$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE CONCAT('%', :title, '%') AND artist_name LIKE CONCAT('%', :artist_name, '%') LIMIT 1";
+	
+
 	
 	$sth = $dbh->prepare($sql);
 	$sth->execute( array(':title' => $original_title, ':artist_name' => $artist ) );
@@ -31,6 +35,7 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = preg_replace("/ - Single/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(Single\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \[Remastered\]/","",$title_replaced);
+	$title_replaced = preg_replace("/ \[Remastered .*\]/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(Remastered\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(Remastered .*\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(Remaster.*\)/","",$title_replaced);
@@ -58,6 +63,13 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = preg_replace("/ \(.*Expanded.*\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(.*digitally remastered.*\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(.*Opera Version.*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.*(Motion Picture Version).*\)/","",$title_replaced);
+	$title_replaced = preg_replace("/ \(.*(From \?Chess\?).*\)/","",$title_replaced);
+	
+	// order is important here
+	$title_replaced = preg_replace("/(&)/","And",$title_replaced);
+	$title_replaced = preg_replace("/Reich And/","&",$title_replaced);
+
 	
 	/* 
 	$title_replaced = preg_replace(" - The Hits","",$title_replaced);
@@ -75,6 +87,8 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	
 	$sth = $dbh->prepare($sql);
 	$sth->execute( array(':title' => $title_replaced, ':artist_name' => $artist ) );
+	
+	var_dump("SELECT cover_xl, title FROM deezer_albums WHERE title LIKE '%".$title_replaced."%' AND artist_name LIKE '%".$artist."%' LIMIT 1");
 	
 	$inner_results = $sth->fetchAll();
 	foreach( $inner_results as $result ){
