@@ -16,8 +16,8 @@ function create_playlist_info(){
 	
 	global $dbh;
 	
-	$sql = "SELECT id, name, description FROM playlists WHERE public = 1";
-	// $sql = "SELECT id, name, description FROM playlists";
+	// $sql = "SELECT id, name, description FROM playlists WHERE public = 1";
+	$sql = "SELECT id, name, description FROM playlists";
 
 	$sth = $dbh->prepare($sql);
 	$sth->execute();

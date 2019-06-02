@@ -54,7 +54,7 @@ function create_playlist( $playlist_id ){
 		$sth->execute();
 		$results = $sth->fetchAll();
 		
-		
+		// encode utf8 for db query
 		foreach ( $results[0] as $key => $value) {
 			if( $key === 'artist' || $key === 'title' || $key === 'album' ){
 				$results[$key] = utf8_encode($value);
@@ -76,7 +76,17 @@ function create_playlist( $playlist_id ){
 		// attempt to get album art from deezer
 		$album_data = get_album_art($results['artist'],$results['album'],$results['collectionId']);
 		$album_art = $album_data['album_art'];
+		
 		$title = $album_data['title'];
+		
+		// redecode utf8 for output
+		foreach ( $results as $key => $value) {
+			if( $key === 'artist' || $key === 'title' || $key === 'album' ){
+				$results[$key] = utf8_decode($value);
+			}
+		}
+		
+		var_dump($results['artist']);
 		
 		if( $album_art != '' ){
 			$replaced_image++;
