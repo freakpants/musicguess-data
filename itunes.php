@@ -30,7 +30,7 @@ $results = $sth->fetchAll();
 	usleep(1000000);
 } */
 
-lookup_collection(79311135, 'ca');
+// lookup_collection(1454274418, 'us');
 
 // lookup_track_details(62983);
 
@@ -38,12 +38,12 @@ lookup_collection(79311135, 'ca');
 /* attempt matching from list from db */
 
 // playlist to add the songs to
-$playlist = 2;
+$playlist = 12;
 
 // pw for allowing ajax to execute
 $pw = $_GET['pw'];
 
-// $sql = "SELECT id, artist, title FROM lookup WHERE added = 0 ORDER BY RAND() LIMIT 10";
+$sql = "SELECT id, artist, title FROM lookup WHERE added = 0 ORDER BY RAND() LIMIT 10";
 $sth = $dbh->prepare($sql);
 $sth->execute();
 $results = $sth->fetchAll();

@@ -91,13 +91,17 @@ function create_playlist( $playlist_id ){
 		if( $album_art != '' ){
 			$replaced_image++;
 			$results['album_art'] = $album_art;
-			echo '<img style="width:200px" src="'.$results['album_art'].'" /></br>';
+			echo '<img style="width:200px" src="../musicguess/game/album_art/' . $results['collectionId'] . '.jpg"   /></br>';
 			echo 'Replaced album art for '.$results['artist'].' - '.$results['title'].' on album '.$results['album'].' <b>with</b> '.$title.'</br>';
 		} else {
 			$kept_image++;
-			echo '<img style="width:200px" src="'.$results['album_art'].'" /></br>';
+			echo '<img style="width:200px" src="../musicguess/game/album_art/' . $results['collectionId'] . '.jpg"   /></br>';
 			echo 'Kept old album art for '.$results['artist'].' - '.$results['title'].' on album '.$results['album'].'</br>';
 		}
+
+		copy($album_art, '../musicguess/game/album_art/' . $results['collectionId'] . ".jpg" );
+		$results['album_art'] = 'album_art/' . $results['collectionId'] . ".jpg";
+
 		echo '</br></br>';
 		
 		
