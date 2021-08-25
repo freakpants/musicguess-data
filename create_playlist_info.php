@@ -16,8 +16,8 @@ function create_playlist_info(){
 	
 	global $dbh;
 	
-	// $sql = "SELECT id, name, description FROM playlists WHERE public = 1";
-	$sql = "SELECT id, name, description FROM playlists";
+	$sql = "SELECT id, name, description FROM playlists WHERE public = 1";
+	//$sql = "SELECT id, name, description FROM playlists";
 
 	$sth = $dbh->prepare($sql);
 	$sth->execute();
@@ -59,9 +59,9 @@ function create_playlist_info(){
 			$sth->execute();
 			$results = $sth->fetch();
 			
-			$info = get_album_art(utf8_encode($results['artistName']),utf8_encode($results['collectionName']),$results['collectionId']);
+			// $info = get_album_art(utf8_encode($results['artistName']),utf8_encode($results['collectionName']),$results['collectionId']);
 			
-			array_push( $playlist_object->album_art, $info['album_art']);
+			array_push( $playlist_object->album_art, 'album_art/' . $results['collectionId'] . ".jpg" );
 			
 		}
 		

@@ -1,6 +1,6 @@
 <?php
 function lookup_collection( $collection_id , $country = "US"){
-	echo 'is happening';
+	echo 'looking up collection';
 	$url = "https://itunes.apple.com/lookup?id=" . $collection_id . "&entity=song&country=" .$country;
 	
 	$json = file_get_contents( $url );
@@ -8,16 +8,16 @@ function lookup_collection( $collection_id , $country = "US"){
 	$counter = 0;
 	
 	echo '<pre>';
-	var_dump($url);
+	var_dump($object->results);
 	echo '</pre>'; 
 	
 	foreach($object->results as $song){
-		if( $counter > 0 ){
+		// if( $counter > 0 ){
 			
 			lookup_track_details( $song->trackId , $country );
 			usleep(1000000);
-		}
-		$counter++;
+		// }
+		// $counter++;
 	}
 }
 
