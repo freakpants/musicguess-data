@@ -1,0 +1,6 @@
+.cancel .MuiSvgIcon-root, .delete .MuiSvgIcon-root{
+  color: red;
+}
+.checked .MuiSvgIcon-root{
+  color: green;
+}
