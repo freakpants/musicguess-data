@@ -36,13 +36,31 @@ const tracks = [
   { field: "trackName", headerName: "Title", width: 200, editable: true },
   { field: "collectionName", headerName: "Album", width: 200, editable: true },
   { field: "cover", headerName: "Cover", width: 200 },
-  { field: "previewUrl", headerName: "Player", width: 200,   renderCell: (cellValues) => {
-    return (
-      <audio controls class="player"> <source src={cellValues.value} type="audio/mpeg" /></audio>
-    );
+  { field: "previewUrl", headerName: "Player", width: 200,   renderCell: (cellValues) => 
+    {
+      return (
+        <audio controls className="player"> <source src={cellValues.value} type="audio/mpeg" /></audio>
+      );
+    }
+  },
+  { field: "id", headerName: "Actions", width: 200,   renderCell: (cellValues) => 
+    {
+      return (
+        <button onClick={() => deleteInAllPlaylists(cellValues.value)}>Delete in all Playlists</button>
+      );
+    }
   }
-}
 ];
+
+function deleteInAllPlaylists(track_id){
+  console.log("trying to delete track " + track_id + " in all playlists.")
+  axios
+  .post("http://localhost/musicguess-data/delete_track_in_playlists.php?id=" + track_id)
+  .then((response) => {
+    // manipulate the response here
+    console.log(response);
+  })
+}
 
 class App extends React.Component {
   playlists;
@@ -71,19 +89,7 @@ class App extends React.Component {
         // manipulate the response here
         this.setState({ playlists: response.data });
         console.log(response.data);
-        /* const parsed = JSON.parse(response.data);
-    if (parsed.success) {
-      alert('Anfrage erfolgreich abgeschickt');
-    } else {
-      alert('Fehler beim Absenden der Anfrage');
-      console.log(parsed.error);
-    } */
       })
-      .catch(function (error) {
-        alert("Fehler beim Absenden der Anfrage");
-        console.log(error);
-        // manipulate the error response here
-      });
   }
 
   selectPlaylist(e) {
