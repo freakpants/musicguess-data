@@ -83,12 +83,12 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = preg_replace(" \(.*Motion Picture.*\)","",$title_replaced);
 	 */
 	
-	echo 'replaced title:'.$title_replaced.'</br>';
+	// echo 'replaced title:'.$title_replaced.'</br>';
 	
 	$sth = $dbh->prepare($sql);
 	$sth->execute( array(':title' => $title_replaced, ':artist_name' => $artist ) );
 	
-	var_dump("SELECT cover_xl, title FROM deezer_albums WHERE title LIKE '%".$title_replaced."%' AND artist_name LIKE '%".$artist."%' LIMIT 1");
+	// var_dump("SELECT cover_xl, title FROM deezer_albums WHERE title LIKE '%".$title_replaced."%' AND artist_name LIKE '%".$artist."%' LIMIT 1");
 	
 	$inner_results = $sth->fetchAll();
 	foreach( $inner_results as $result ){
@@ -104,7 +104,7 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 		$album_art = $result['image'];
 	}
 	
-	echo 'album art:'.$album_art.'</br>';
+	// echo 'album art:'.$album_art.'</br>';
 	
 	return array('album_art' => $album_art, 'title' => $title_replaced);
 } 			

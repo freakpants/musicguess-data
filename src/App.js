@@ -2,11 +2,10 @@ import axios from "axios";
 import "./App.css";
 import React from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import CancelIcon from "@material-ui/icons/Cancel";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 /* 
 Command to copy php scripts
@@ -39,62 +38,94 @@ const tracks = [
   { field: "artistName", headerName: "Artist", width: 200, editable: true },
   { field: "trackName", headerName: "Title", width: 200, editable: true },
   { field: "collectionName", headerName: "Album", width: 200, editable: true },
-  { field: "cover", headerName: "Cover", width: 200 },
-  { field: "previewUrl", headerName: "Player", width: 200,   renderCell: (cellValues) => 
-    {
-      return (
-        <audio controls className="player"> <source src={cellValues.value} type="audio/mpeg" /></audio>
-      );
-    }
-  },
-  { field: "id", headerName: "Delete", width: 130,   renderCell: (cellValues) => 
-    {
-      return (
-          <IconButton className="delete" onClick={() => deleteInAllPlaylists(cellValues.value)} aria-label="delete">
-            <DeleteIcon fontSize="large" />
-          </IconButton>
-      );
-    }
-  },
-  { field: "checked", headerName: "Checked", width: 140,   renderCell: (cellValues) => 
   {
-    const value = cellValues.value;
-    if(value === "0" ){
+    field: "collectionId",
+    headerName: "Cover",
+    width: 200,
+    renderCell: (cellValues) => {
+      const src = "http://localhost/musicguess/game/album_art/" + cellValues.value  + ".jpg";
+      return (<img className="coverArt" src={src} />);
+    },
+  },
+  {
+    field: "previewUrl",
+    headerName: "Player",
+    width: 200,
+    renderCell: (cellValues) => {
       return (
-        <IconButton  onClick={() => markTrackAsChecked(cellValues.row.id)} className="cancel">
-        <CancelIcon fontSize="large" />
-      </IconButton>
+        <audio controls className="player">
+          {" "}
+          <source src={cellValues.value} type="audio/mpeg" />
+        </audio>
       );
-    } else {
+    },
+  },
+  {
+    field: "id",
+    headerName: "Delete",
+    width: 130,
+    renderCell: (cellValues) => {
       return (
-        <IconButton  className="checked">
-        <CheckCircleIcon fontSize="large" />
-      </IconButton>
+        <IconButton
+          className="delete"
+          onClick={() => deleteInAllPlaylists(cellValues.value)}
+          aria-label="delete"
+        >
+          <DeleteIcon fontSize="large" />
+        </IconButton>
       );
-    }
-
-  }
-}
+    },
+  },
+  {
+    field: "checked",
+    headerName: "Checked",
+    width: 140,
+    renderCell: (cellValues) => {
+      const value = cellValues.value;
+      if (value === "0") {
+        return (
+          <IconButton
+            onClick={() => markTrackAsChecked(cellValues.row.id)}
+            className="cancel"
+          >
+            <CancelIcon fontSize="large" />
+          </IconButton>
+        );
+      } else {
+        return (
+          <IconButton className="checked">
+            <CheckCircleIcon fontSize="large" />
+          </IconButton>
+        );
+      }
+    },
+  },
 ];
 
-function markTrackAsChecked(track_id){
-  console.log("trying to mark track " + track_id + " as checked.")
+function markTrackAsChecked(track_id) {
+  console.log("trying to mark track " + track_id + " as checked.");
   axios
-  .post("http://localhost/musicguess-data/mark_track_as_checked.php?id=" + track_id)
-  .then((response) => {
-    // manipulate the response here
-    console.log(response);
-  })
+    .post(
+      "http://localhost/musicguess-data/mark_track_as_checked.php?id=" +
+        track_id
+    )
+    .then((response) => {
+      // manipulate the response here
+      console.log(response);
+    });
 }
 
-function deleteInAllPlaylists(track_id){
-  console.log("trying to delete track " + track_id + " in all playlists.")
+function deleteInAllPlaylists(track_id) {
+  console.log("trying to delete track " + track_id + " in all playlists.");
   axios
-  .post("http://localhost/musicguess-data/delete_track_in_playlists.php?id=" + track_id)
-  .then((response) => {
-    // manipulate the response here
-    console.log(response);
-  })
+    .post(
+      "http://localhost/musicguess-data/delete_track_in_playlists.php?id=" +
+        track_id
+    )
+    .then((response) => {
+      // manipulate the response here
+      console.log(response);
+    });
 }
 
 class App extends React.Component {
@@ -124,7 +155,7 @@ class App extends React.Component {
         // manipulate the response here
         this.setState({ playlists: response.data });
         console.log(response.data);
-      })
+      });
   }
 
   selectPlaylist(e) {
@@ -155,7 +186,7 @@ class App extends React.Component {
       <div>
         <h1>{this.state.locationTitle}</h1>
         <div style={{ height: "85vh", width: "100%" }}>
-        {this.state.location === "overview" && (
+          {this.state.location === "overview" && (
             <React.Fragment>
               <DataGrid
                 rows={this.state.playlists}
@@ -168,7 +199,7 @@ class App extends React.Component {
                 Go to selected Playlist
               </button>
             </React.Fragment>
-        )}
+          )}
           {this.state.location === "singlePlaylist" && (
             <React.Fragment>
               <DataGrid
@@ -176,12 +207,12 @@ class App extends React.Component {
                 columns={tracks}
                 pageSize={100}
                 rowsPerPageOptions={[5]}
+                rowHeight={200}
               />
-                <button onClick={(e) => this.setState({location: "overview"})}>
+              <button onClick={(e) => this.setState({ location: "overview" })}>
                 Go back to Overview
               </button>
             </React.Fragment>
-
           )}
         </div>
       </div>
