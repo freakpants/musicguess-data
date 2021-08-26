@@ -1,7 +1,8 @@
 import axios from "axios";
 import "./App.css";
 import React from "react";
-import { DataGrid, useGridApiRef } from "@material-ui/data-grid";
+import { DataGrid } from "@material-ui/data-grid";
+
 
 /* 
 Command to copy php scripts
@@ -34,6 +35,13 @@ const tracks = [
   { field: "artistName", headerName: "Artist", width: 200, editable: true },
   { field: "trackName", headerName: "Title", width: 200, editable: true },
   { field: "collectionName", headerName: "Album", width: 200, editable: true },
+  { field: "cover", headerName: "Cover", width: 200 },
+  { field: "previewUrl", headerName: "Player", width: 200,   renderCell: (cellValues) => {
+    return (
+      <audio controls class="player"> <source src={cellValues.value} type="audio/mpeg" /></audio>
+    );
+  }
+}
 ];
 
 class App extends React.Component {
