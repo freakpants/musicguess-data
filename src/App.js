@@ -143,7 +143,6 @@ class App extends React.Component {
         // this.setState({playlist: response.data.tracks});
         this.setState({
           playlist: response.data.tracks,
-          columns: tracks,
           locationTitle: response.data[0].name,
           location: "singlePlaylist",
         });
@@ -156,7 +155,7 @@ class App extends React.Component {
       <div>
         <h1>{this.state.locationTitle}</h1>
         <div style={{ height: "85vh", width: "100%" }}>
-          {this.state.location === "overview" && (
+        {this.state.location === "overview" && (
             <React.Fragment>
               <DataGrid
                 rows={this.state.playlists}
@@ -169,8 +168,7 @@ class App extends React.Component {
                 Go to selected Playlist
               </button>
             </React.Fragment>
-          )}
-
+        )}
           {this.state.location === "singlePlaylist" && (
             <React.Fragment>
               <DataGrid
