@@ -2,6 +2,10 @@ import axios from "axios";
 import "./App.css";
 import React from "react";
 import { DataGrid } from "@material-ui/data-grid";
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CancelIcon from '@material-ui/icons/Cancel';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 
 /* 
@@ -43,14 +47,45 @@ const tracks = [
       );
     }
   },
-  { field: "id", headerName: "Actions", width: 200,   renderCell: (cellValues) => 
+  { field: "id", headerName: "Delete", width: 130,   renderCell: (cellValues) => 
     {
       return (
-        <button onClick={() => deleteInAllPlaylists(cellValues.value)}>Delete in all Playlists</button>
+          <IconButton className="delete" onClick={() => deleteInAllPlaylists(cellValues.value)} aria-label="delete">
+            <DeleteIcon fontSize="large" />
+          </IconButton>
       );
     }
+  },
+  { field: "checked", headerName: "Checked", width: 140,   renderCell: (cellValues) => 
+  {
+    const value = cellValues.value;
+    if(value === "0" ){
+      return (
+        <IconButton  onClick={() => markTrackAsChecked(cellValues.row.id)} className="cancel">
+        <CancelIcon fontSize="large" />
+      </IconButton>
+      );
+    } else {
+      return (
+        <IconButton  className="checked">
+        <CheckCircleIcon fontSize="large" />
+      </IconButton>
+      );
+    }
+
   }
+}
 ];
+
+function markTrackAsChecked(track_id){
+  console.log("trying to mark track " + track_id + " as checked.")
+  axios
+  .post("http://localhost/musicguess-data/mark_track_as_checked.php?id=" + track_id)
+  .then((response) => {
+    // manipulate the response here
+    console.log(response);
+  })
+}
 
 function deleteInAllPlaylists(track_id){
   console.log("trying to delete track " + track_id + " in all playlists.")
