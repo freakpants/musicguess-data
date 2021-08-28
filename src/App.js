@@ -85,7 +85,7 @@ const tracks = [
       if (value === "0") {
         return (
           <IconButton
-            onClick={() => markTrackAsChecked(cellValues.row.id)}
+            onClick={() => markTrackAsChecked(cellValues.row.id, cellValues.row.artistName, cellValues.row.trackName, cellValues.row.collectionName)}
             className="cancel"
           >
             <CancelIcon fontSize="large" />
@@ -102,12 +102,12 @@ const tracks = [
   },
 ];
 
-function markTrackAsChecked(track_id) {
+function markTrackAsChecked(track_id, artist, title, album) {
   console.log("trying to mark track " + track_id + " as checked.");
   axios
     .post(
       "http://localhost/musicguess-data/mark_track_as_checked.php?id=" +
-        track_id
+        track_id + "&artist=" + artist + "&title=" + title + "&album=" + album
     )
     .then((response) => {
       // manipulate the response here
@@ -205,7 +205,7 @@ class App extends React.Component {
               <DataGrid
                 rows={this.state.playlist}
                 columns={tracks}
-                pageSize={100}
+                pageSize={10}
                 rowsPerPageOptions={[5]}
                 rowHeight={200}
               />

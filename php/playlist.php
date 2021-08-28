@@ -1,6 +1,6 @@
 <?php
 require("connect.php");
-require("functions.php");
+// require("functions.php");
 
 global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
