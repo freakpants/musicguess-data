@@ -205,7 +205,7 @@ class App extends React.Component {
               <DataGrid
                 rows={this.state.playlist}
                 columns={tracks}
-                pageSize={10}
+                pageSize={4}
                 rowsPerPageOptions={[5]}
                 rowHeight={200}
               />
