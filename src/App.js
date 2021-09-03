@@ -6,6 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import TextField from '@material-ui/core/TextField';
 
 /* 
 Command to copy php scripts
@@ -144,16 +145,39 @@ class App extends React.Component {
       location: "overview",
       locationTitle: "Playlist Overview",
       selectedPlaylist: 0,
+      searchArtist: '',
+      searchTitle: '',
+      searchAlbum: '',
+      searchCountry: '',
     };
 
     this.goToSelectedPlaylist = this.goToSelectedPlaylist.bind(this);
     this.selectPlaylist = this.selectPlaylist.bind(this);
+    this.search = this.search.bind(this);
 
     axios
       .post("http://localhost/musicguess-data/playlists.php")
       .then((response) => {
         // manipulate the response here
         this.setState({ playlists: response.data });
+        console.log(response.data);
+      });
+  }
+  
+  search(){
+    axios
+      .post(
+        "http://localhost/musicguess-data/search.php?artist=" +
+          this.state.searchArtist + "&title=" + this.state.searchTitle + "&album=" + this.state.searchAlbum + "&country=" + this.state.searchCountry
+      )
+      .then((response) => {
+        // manipulate the response here
+        // this.setState({playlist: response.data.tracks});
+        /* this.setState({
+          playlist: response.data.tracks,
+          locationTitle: response.data[0].name,
+          location: "singlePlaylist",
+        }); */
         console.log(response.data);
       });
   }
@@ -198,6 +222,13 @@ class App extends React.Component {
               <button onClick={this.goToSelectedPlaylist}>
                 Go to selected Playlist
               </button>
+              <TextField id="artist" label="artist" variant="outlined" value={this.state.searchArtist} onChange={(e) => { this.setState({searchArtist: e.target.value}); }} />
+              <TextField id="title" label="title" variant="outlined" value={this.state.searchTitle} onChange={(e) => { this.setState({searchTitle: e.target.value}); }}  />
+              <TextField id="album" label="album" variant="outlined"value={this.state.searchAlbum} onChange={(e) => { this.setState({searchAlbum: e.target.value}); }}  />
+              <TextField id="country" label="country" variant="outlined"value={this.state.searchCountry} onChange={(e) => { this.setState({searchCountry: e.target.value}); }}  />
+              <button onClick={this.search}>
+                search
+              </button>
             </React.Fragment>
           )}
           {this.state.location === "singlePlaylist" && (
@@ -209,6 +240,7 @@ class App extends React.Component {
                 rowsPerPageOptions={[5]}
                 rowHeight={200}
               />
+
               <button onClick={(e) => this.setState({ location: "overview" })}>
                 Go back to Overview
               </button>
