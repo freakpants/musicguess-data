@@ -41,6 +41,12 @@ const columns = [
     width: 500,
     editable: true,
   },
+  {
+    field: "track_count",
+    headerName: "Tracks",
+    width: 120,
+    editable: true,
+  },
 ];
 
 const playlists = [1, 2, 3, 4, 5, 6];

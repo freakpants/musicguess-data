@@ -60,7 +60,12 @@ $counter = 0;
 foreach($object->results as $track){
 	$artistName = $track->artistName;
 	$trackName = $track->trackName;
-	$previewUrl = $track->previewUrl;
+    if(isset($track->previewUrl)){
+        $previewUrl = $track->previewUrl;
+    } else {
+        $previewUrl = "";
+    }
+
 	$wrapperType = $track->wrapperType;
 	$kind = $track->kind;
 	$artistId = $track->artistId;
