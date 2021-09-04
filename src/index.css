@@ -17,3 +17,7 @@ code {
   white-space: unset;
   overflow: unset;
 }
+
+.MuiSelect-selectMenu.MuiSelect-selectMenu{
+  white-space: unset;
+}
