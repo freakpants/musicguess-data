@@ -7,6 +7,15 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import TextField from "@material-ui/core/TextField";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import ListItemText from "@material-ui/core/ListItemText";
+import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+import Chip from "@material-ui/core/Chip";
+import { ContactSupportOutlined } from "@material-ui/icons";
 
 /* 
 Command to copy php scripts
@@ -34,69 +43,7 @@ const columns = [
   },
 ];
 
-const trackColumns = [
-  { field: "trackId", headerName: "ID" },
-  {
-    field: "artistName",
-    headerName: "Artist",
-    width: 200,
-    editable: true,
-  },
-  {
-    field: "trackName",
-    headerName: "Title",
-    width: 200,
-    editable: true,
-  },
-  {
-    field: "collectionName",
-    headerName: "Album",
-    width: 250,
-    editable: true,
-  },
-  {
-    field: "collectionId",
-    headerName: "Cover",
-    width: 200,
-    renderCell: (cellValues) => {
-      const src =
-        "http://localhost/musicguess/game/album_art/" +
-        cellValues.value +
-        ".jpg";
-      return <img className="coverArt" src={src} />;
-    },
-  },
-  {
-    field: "releaseDate",
-    headerName: "Release",
-    width: 130,
-    editable: false,
-    valueFormatter: (params) => {
-      const release = new Date(params.value.replace(/T.*/, ""));
-      return release.getDate() + "." + (release.getMonth()+1)  + "." + release.getFullYear();
-    },
-  },
-  {
-    field: "previewUrl",
-    headerName: "Player",
-    width: 200,
-    renderCell: (cellValues) => {
-      return (
-        <audio controls className="player">
-          {" "}
-          <source src={cellValues.value} type="audio/mpeg" />
-        </audio>
-      );
-    },
-  },
-  {
-    field: "playlist_names",
-    headerName: "Playlists",
-    width: 200,
-    editable: false,
-  },
-];
-
+const playlists = [1, 2, 3, 4, 5, 6];
 
 const tracks = [
   { field: "service", headerName: "service", width: 130, editable: true },
@@ -210,7 +157,107 @@ function deleteInAllPlaylists(track_id) {
 }
 
 class App extends React.Component {
-  playlists;
+  trackColumns = [
+    { field: "trackId", headerName: "ID" },
+    {
+      field: "artistName",
+      headerName: "Artist",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "trackName",
+      headerName: "Title",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "collectionName",
+      headerName: "Album",
+      width: 250,
+      editable: true,
+    },
+    {
+      field: "collectionId",
+      headerName: "Cover",
+      width: 200,
+      renderCell: (cellValues) => {
+        const src =
+          "http://localhost/musicguess/game/album_art/" +
+          cellValues.value +
+          ".jpg";
+        return <img className="coverArt" src={src} />;
+      },
+    },
+    {
+      field: "releaseDate",
+      headerName: "Release",
+      width: 130,
+      editable: false,
+      valueFormatter: (params) => {
+        const release = new Date(params.value.replace(/T.*/, ""));
+        return (
+          release.getDate() +
+          "." +
+          (release.getMonth() + 1) +
+          "." +
+          release.getFullYear()
+        );
+      },
+    },
+    {
+      field: "previewUrl",
+      headerName: "Player",
+      width: 200,
+      renderCell: (cellValues) => {
+        return (
+          <audio controls className="player">
+            {" "}
+            <source src={cellValues.value} type="audio/mpeg" />
+          </audio>
+        );
+      },
+    },
+    {
+      field: "playlist_ids",
+      headerName: "Playlists",
+      width: 300,
+      editable: false,
+      renderCell: (cellValues) => {
+        // return (<div>No playlists </div>);
+        if (cellValues.value === undefined || cellValues.value.length === 0) {
+          return <div>No playlists</div>;
+        }
+        return (
+          <FormControl>
+            <Select
+              labelId="demo-mutiple-chip-label"
+              id={cellValues.row.trackId}
+              multiple
+              onChange={(e) => {
+                this.handlePlaylistSelect(e, cellValues);
+              }}
+              input={<Input id="select-multiple-chip" />}
+              value={cellValues.value}
+              renderValue={(selected) => (
+                <div>
+                  {selected.map((value) => (
+                    <Chip key={value} label={this.state.playlists[value].name} />
+                  ))}
+                </div>
+              )}
+            >
+              {this.state.playlists.map((list) => (
+                <MenuItem key={list.id} value={list.id}>
+                  {list.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        );
+      },
+    },
+  ];
 
   constructor(props) {
     super(props);
@@ -242,6 +289,7 @@ class App extends React.Component {
     this.goToSelectedPlaylist = this.goToSelectedPlaylist.bind(this);
     this.selectPlaylist = this.selectPlaylist.bind(this);
     this.search = this.search.bind(this);
+    this.handlePlaylistSelect = this.handlePlaylistSelect.bind(this);
 
     axios
       .post("http://localhost/musicguess-data/playlists.php")
@@ -250,6 +298,25 @@ class App extends React.Component {
         this.setState({ playlists: response.data });
         console.log(response.data);
       });
+  }
+
+  handlePlaylistSelect(e, cellValues) {
+    const playlist_ids_selected = e.target.value;
+    console.log(e);
+    // change playlist ids back into names
+    let ids = [];
+    this.state.playlists.forEach((playlist) => {
+      if(playlist_ids_selected.includes(playlist.id)){
+        ids.push(playlist.id);
+      }
+    });
+
+    this.setState((prevState) => ({
+      songs: prevState.songs.map(
+        song => song.trackId === cellValues.row.trackId? { ...song, playlist_ids: ids } : song
+        )
+    })); 
+    console.log(cellValues.row.trackId);
   }
 
   search() {
@@ -362,7 +429,7 @@ class App extends React.Component {
           {this.state.location === "songList" && (
             <DataGrid
               rows={this.state.songs}
-              columns={trackColumns}
+              columns={this.trackColumns}
               pageSize={50}
               rowsPerPageOptions={[5]}
               rowHeight={200}
@@ -378,7 +445,14 @@ class App extends React.Component {
             />
           )}
           {this.state.location !== "overview" && (
-            <button onClick={(e) => this.setState({ location: "overview", locationTitle: "Playlist Overview" })}>
+            <button
+              onClick={(e) =>
+                this.setState({
+                  location: "overview",
+                  locationTitle: "Playlist Overview",
+                })
+              }
+            >
               Go back to Overview
             </button>
           )}
