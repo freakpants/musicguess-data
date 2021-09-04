@@ -65,6 +65,12 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = preg_replace("/ \(.*Opera Version.*\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(.*(Motion Picture Version).*\)/","",$title_replaced);
 	$title_replaced = preg_replace("/ \(.*(From \?Chess\?).*\)/","",$title_replaced);
+
+	// new regexes
+	$title_replaced = preg_replace("/\[.*Remix\]/","",$title_replaced);
+	$title_replaced = preg_replace("/\(.*Remix\)/","",$title_replaced);
+	$title_replaced = preg_replace("/\(Instrumental\)/","",$title_replaced);
+
 	
 	// order is important here
 	$title_replaced = preg_replace("/(&)/","And",$title_replaced);
@@ -83,7 +89,7 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	$title_replaced = preg_replace(" \(.*Motion Picture.*\)","",$title_replaced);
 	 */
 	
-	// echo 'replaced title:'.$title_replaced.'</br>';
+	// echo "Looking for: ".$artist." - ".$title_replaced."\r\n";
 	
 	$sth = $dbh->prepare($sql);
 	$sth->execute( array(':title' => $title_replaced, ':artist_name' => $artist ) );

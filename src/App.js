@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 
 /* 
 Command to copy php scripts
@@ -34,6 +34,50 @@ const columns = [
   },
 ];
 
+const trackColumns = [
+  { field: "trackId", headerName: "ID" },
+  {
+    field: "artistName",
+    headerName: "Artist",
+    width: 200,
+    editable: true,
+  },
+  {
+    field: "trackName",
+    headerName: "Title",
+    width: 200,
+    editable: true,
+  },
+  {
+    field: "collectionName",
+    headerName: "Album",
+    width: 250,
+    editable: true,
+  },
+  {
+    field: "collectionId",
+    headerName: "Cover",
+    width: 200,
+    renderCell: (cellValues) => {
+      const src =
+        "http://localhost/musicguess/game/album_art/" +
+        cellValues.value +
+        ".jpg";
+      return <img className="coverArt" src={src} />;
+    },
+  },
+  {
+    field: "releaseDate",
+    headerName: "Release",
+    width: 130,
+    editable: false,
+    valueFormatter: (params) => {
+      const release = new Date(params.value.replace(/T.*/, ""));
+      return release.getDate() + "." + (release.getMonth()+1)  + "." + release.getFullYear();
+    },
+  },
+];
+
 const tracks = [
   { field: "service", headerName: "service", width: 130, editable: true },
   { field: "artistName", headerName: "Artist", width: 200, editable: true },
@@ -44,8 +88,11 @@ const tracks = [
     headerName: "Cover",
     width: 200,
     renderCell: (cellValues) => {
-      const src = "http://localhost/musicguess/game/album_art/" + cellValues.value  + ".jpg";
-      return (<img className="coverArt" src={src} />);
+      const src =
+        "http://localhost/musicguess/game/album_art/" +
+        cellValues.value +
+        ".jpg";
+      return <img className="coverArt" src={src} />;
     },
   },
   {
@@ -86,7 +133,14 @@ const tracks = [
       if (value === "0") {
         return (
           <IconButton
-            onClick={() => markTrackAsChecked(cellValues.row.id, cellValues.row.artistName, cellValues.row.trackName, cellValues.row.collectionName)}
+            onClick={() =>
+              markTrackAsChecked(
+                cellValues.row.id,
+                cellValues.row.artistName,
+                cellValues.row.trackName,
+                cellValues.row.collectionName
+              )
+            }
             className="cancel"
           >
             <CancelIcon fontSize="large" />
@@ -108,7 +162,13 @@ function markTrackAsChecked(track_id, artist, title, album) {
   axios
     .post(
       "http://localhost/musicguess-data/mark_track_as_checked.php?id=" +
-        track_id + "&artist=" + artist + "&title=" + title + "&album=" + album
+        track_id +
+        "&artist=" +
+        artist +
+        "&title=" +
+        title +
+        "&album=" +
+        album
     )
     .then((response) => {
       // manipulate the response here
@@ -141,14 +201,22 @@ class App extends React.Component {
         { id: 1, name: "Snow", public: "Jon", description: "something" },
       ],
       columns: columns,
+      songs: [
+        {
+          trackId: 0,
+          artistName: "Jon Snow",
+          trackName: "Song",
+          collectionName: "Album",
+        },
+      ],
       playlist: [{ id: 0, service: "itunessss" }],
       location: "overview",
       locationTitle: "Playlist Overview",
       selectedPlaylist: 0,
-      searchArtist: '',
-      searchTitle: '',
-      searchAlbum: '',
-      searchCountry: '',
+      searchArtist: "",
+      searchTitle: "",
+      searchAlbum: "",
+      searchCountry: "",
     };
 
     this.goToSelectedPlaylist = this.goToSelectedPlaylist.bind(this);
@@ -163,22 +231,32 @@ class App extends React.Component {
         console.log(response.data);
       });
   }
-  
-  search(){
+
+  search() {
     axios
       .post(
         "http://localhost/musicguess-data/search.php?artist=" +
-          this.state.searchArtist + "&title=" + this.state.searchTitle + "&album=" + this.state.searchAlbum + "&country=" + this.state.searchCountry
+          this.state.searchArtist +
+          "&title=" +
+          this.state.searchTitle +
+          "&album=" +
+          this.state.searchAlbum +
+          "&country=" +
+          this.state.searchCountry
       )
       .then((response) => {
         // manipulate the response here
-        // this.setState({playlist: response.data.tracks});
-        /* this.setState({
-          playlist: response.data.tracks,
-          locationTitle: response.data[0].name,
-          location: "singlePlaylist",
-        }); */
-        console.log(response.data);
+        console.log(response.data.results);
+        let songsWithId = response.data;
+        songsWithId.forEach(function (part, index, songsWithId) {
+          this[index].id = part.trackId;
+        }, songsWithId);
+        console.log(songsWithId);
+        this.setState({
+          songs: songsWithId,
+          locationTitle: "Songs",
+          location: "songList",
+        });
       });
   }
 
@@ -222,29 +300,67 @@ class App extends React.Component {
               <button onClick={this.goToSelectedPlaylist}>
                 Go to selected Playlist
               </button>
-              <TextField id="artist" label="artist" variant="outlined" value={this.state.searchArtist} onChange={(e) => { this.setState({searchArtist: e.target.value}); }} />
-              <TextField id="title" label="title" variant="outlined" value={this.state.searchTitle} onChange={(e) => { this.setState({searchTitle: e.target.value}); }}  />
-              <TextField id="album" label="album" variant="outlined"value={this.state.searchAlbum} onChange={(e) => { this.setState({searchAlbum: e.target.value}); }}  />
-              <TextField id="country" label="country" variant="outlined"value={this.state.searchCountry} onChange={(e) => { this.setState({searchCountry: e.target.value}); }}  />
-              <button onClick={this.search}>
-                search
-              </button>
+              <TextField
+                id="artist"
+                label="artist"
+                variant="outlined"
+                value={this.state.searchArtist}
+                onChange={(e) => {
+                  this.setState({ searchArtist: e.target.value });
+                }}
+              />
+              <TextField
+                id="title"
+                label="title"
+                variant="outlined"
+                value={this.state.searchTitle}
+                onChange={(e) => {
+                  this.setState({ searchTitle: e.target.value });
+                }}
+              />
+              <TextField
+                id="album"
+                label="album"
+                variant="outlined"
+                value={this.state.searchAlbum}
+                onChange={(e) => {
+                  this.setState({ searchAlbum: e.target.value });
+                }}
+              />
+              <TextField
+                id="country"
+                label="country"
+                variant="outlined"
+                value={this.state.searchCountry}
+                onChange={(e) => {
+                  this.setState({ searchCountry: e.target.value });
+                }}
+              />
+              <button onClick={this.search}>search</button>
             </React.Fragment>
           )}
+          {this.state.location === "songList" && (
+            <DataGrid
+              rows={this.state.songs}
+              columns={trackColumns}
+              pageSize={50}
+              rowsPerPageOptions={[5]}
+              rowHeight={200}
+            />
+          )}
           {this.state.location === "singlePlaylist" && (
-            <React.Fragment>
-              <DataGrid
-                rows={this.state.playlist}
-                columns={tracks}
-                pageSize={4}
-                rowsPerPageOptions={[5]}
-                rowHeight={200}
-              />
-
-              <button onClick={(e) => this.setState({ location: "overview" })}>
-                Go back to Overview
-              </button>
-            </React.Fragment>
+            <DataGrid
+              rows={this.state.playlist}
+              columns={tracks}
+              pageSize={100}
+              rowsPerPageOptions={[5]}
+              rowHeight={200}
+            />
+          )}
+          {this.state.location !== "overview" && (
+            <button onClick={(e) => this.setState({ location: "overview", locationTitle: "Playlist Overview" })}>
+              Go back to Overview
+            </button>
           )}
         </div>
       </div>
