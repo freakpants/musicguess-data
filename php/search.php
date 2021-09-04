@@ -9,6 +9,7 @@ $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 $term = urlencode(utf8_encode($_GET['artist'])).'+'.urlencode(utf8_encode($_GET['title'])).'+'.urlencode(utf8_encode($_GET['album']));
 
 // lookup the track in deezer
+// echo 'searching';
 lookup_track( $_GET['artist'], $_GET['title'] );
 
 if(isset($_GET['country'])){
