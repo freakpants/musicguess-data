@@ -6,8 +6,8 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	
 	
 	$album_art = '';
-	$artist = utf8_decode($artist);
-	$original_title = utf8_decode($title);
+	$artist = $artist;
+	$original_title = $title;
 	
 	
 	

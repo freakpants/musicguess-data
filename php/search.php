@@ -144,31 +144,34 @@ foreach($object->results as $track){
 }
 
 $json_array = array();
-foreach($return_array as $key => $value){
-    $sql = "SELECT relation_id, playlists.id as id FROM songs_in_playlist LEFT JOIN playlists ON songs_in_playlist.playlist_id = playlists.id  WHERE `track_id` = :id";
-    $sth = $dbh->prepare($sql);
-    $sth->execute(array(":id" => $key));
-    $results = $sth->fetchAll(PDO::FETCH_ASSOC);
-    if(is_array($value)){
-        $value['relation_ids'] = array();
-        $value['playlist_ids'] = array();
-        foreach($results as $result){
-            array_push($value['relation_ids'], $result['relation_id']);
-            array_push($value['playlist_ids'], $result['id']);
+if(isset($return_array)){
+    foreach($return_array as $key => $value){
+        $sql = "SELECT relation_id, playlists.id as id FROM songs_in_playlist LEFT JOIN playlists ON songs_in_playlist.playlist_id = playlists.id  WHERE `track_id` = :id";
+        $sth = $dbh->prepare($sql);
+        $sth->execute(array(":id" => $key));
+        $results = $sth->fetchAll(PDO::FETCH_ASSOC);
+        if(is_array($value)){
+            $value['relation_ids'] = array();
+            $value['playlist_ids'] = array();
+            foreach($results as $result){
+                array_push($value['relation_ids'], $result['relation_id']);
+                array_push($value['playlist_ids'], $result['id']);
+            }
+        } else {
+            $value->relation_ids = array();
+            $value->playlist_ids = array();
+            foreach($results as $result){
+                array_push($value->relation_ids, $result['relation_id']);
+                array_push($value->playlist_ids, $result['id']);
+            }
         }
-    } else {
-        $value->relation_ids = array();
-        $value->playlist_ids = array();
-        foreach($results as $result){
-            array_push($value->relation_ids, $result['relation_id']);
-            array_push($value->playlist_ids, $result['id']);
-        }
+    
+        // $value['playlist_ids'] = $results['playlist_'];
+    
+        array_push( $json_array, $value);
     }
-
-    // $value['playlist_ids'] = $results['playlist_'];
-
-    array_push( $json_array, $value);
 }
+
 
 // echo json_encode($results);
 echo json_encode($json_array);
