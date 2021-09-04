@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.MuiDataGrid-root .MuiDataGrid-cell.MuiDataGrid-cell{
+  line-height: 2 !important;
+  white-space: unset;
+  overflow: unset;
+}
