@@ -20,7 +20,7 @@ if(isset($_GET['country'])){
 
 $json = file_get_contents( $url );
 
-$sql = "SELECT id as trackId, previewUrl, artistName, trackName, collectionName, releaseDate FROM itunes_tracks 
+$sql = "SELECT id as trackId, previewUrl, artistName, trackName, collectionName, releaseDate, collectionId FROM itunes_tracks 
 WHERE artistName LIKE CONCAT('%', :artistName, '%') AND trackName LIKE CONCAT('%', :trackName, '%') AND collectionName LIKE CONCAT('%', :collectionName, '%') ORDER BY collectionName, releaseDate ASC";
 $sth = $dbh->prepare($sql);
 if(isset($_GET['artist']) && $_GET['artist'] !== ''){
@@ -41,6 +41,11 @@ if(isset($_GET['album']) && $_GET['album'] !== ''){
 
 $sth->execute( array(':artistName' => $artist, ':trackName' => $title, ':collectionName' => $album ));
 $results = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+foreach($results as $result){
+    $return_array[$result['trackId']] = $result;
+}
+
 
 // copy for manipulation
 // $merged = $results;
@@ -127,6 +132,10 @@ foreach($object->results as $track){
 	':collectionName' => $collectionName,
 	':collectionCensoredName' => $collectionCensoredName
 	));
+
+    if(! isset($return_array[$track->trackId])){
+        $return_array[$track->trackId] = $track;
+    }
     /* foreach ($results as $result){
         if($result['trackId'] !== $track->trackId){
             $merged = array_merge($merged, $track);
@@ -134,11 +143,11 @@ foreach($object->results as $track){
     } */
 }
 
-
-if(isset($object->results)){
-    echo json_encode(array_merge($results, $object->results));
-} else {
-    echo json_encode($results);
+$json_array = array();
+foreach($return_array as $key => $value){
+    array_push( $json_array, $value);
 }
 
+// echo json_encode($results);
+echo json_encode($json_array);
 	
