@@ -75,7 +75,7 @@ function save_album_details ( $album_id, $album ){
 function lookup_album( $album_id ){
 	global $dbh;
 
-	$url = "https://api.deezer.com/album/" . $album_id;
+	$url = "https://api.deezer.com/album/" . $album_id . "&limit=100";
 	
 	echo "checking api url ".$url.' </br>';
 	$json = file_get_contents($url);
@@ -133,7 +133,7 @@ function save_track_to_db( $track, $tracklist = '', $album_id = '' ){
 function lookup_artist( $artist_id ){
 	global $dbh;
 
-	$url = "https://api.deezer.com/artist/" . $artist_id . "/top?limit=2000";
+	$url = "https://api.deezer.com/artist/" . $artist_id . "/top?limit=100";
 	$json = file_get_contents($url);
 	$object = json_decode($json);
 	 
@@ -142,7 +142,7 @@ function lookup_artist( $artist_id ){
 		save_track_to_db( $track );
 	}
 	
-	$url = "https://api.deezer.com/artist/" . $artist_id . "/albums?limit=2000";
+	$url = "https://api.deezer.com/artist/" . $artist_id . "/albums?limit=100";
 	$json = file_get_contents($url);
 	$object = json_decode($json);
 	
@@ -169,7 +169,7 @@ function lookup_artist( $artist_id ){
 		echo 'executing 1 album sql.'.$sql.'</br></br>';
 	} 
 	
-	$url = "https://api.deezer.com/artist/" . $artist_id;
+	$url = "https://api.deezer.com/artist/" . $artist_id . "&limit=100;
 	$json = file_get_contents($url);
 	$object = json_decode($json);
 	
