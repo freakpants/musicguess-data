@@ -20,10 +20,26 @@ if(isset($_GET['country'])){
 
 $json = file_get_contents( $url );
 
-$sql = "SELECT id as trackId, artistName, trackName, collectionName, releaseDate FROM itunes_tracks 
+$sql = "SELECT id as trackId, previewUrl, artistName, trackName, collectionName, releaseDate FROM itunes_tracks 
 WHERE artistName LIKE CONCAT('%', :artistName, '%') AND trackName LIKE CONCAT('%', :trackName, '%') AND collectionName LIKE CONCAT('%', :collectionName, '%') ORDER BY collectionName, releaseDate ASC";
 $sth = $dbh->prepare($sql);
-$sth->execute( array(':artistName' => $_GET['artist'], ':trackName' => $_GET['title'], ':collectionName' => $_GET['album']) );
+if(isset($_GET['artist']) && $_GET['artist'] !== ''){
+    $artist = $_GET['artist'];
+} else {
+    $artist = '';
+}
+if(isset($_GET['title']) && $_GET['title'] !== ''){
+    $title = $_GET['title'];
+} else {
+    $title = '';
+}
+if(isset($_GET['album']) && $_GET['album'] !== ''){
+    $album = $_GET['album'];
+} else {
+    $album = '';
+}
+
+$sth->execute( array(':artistName' => $artist, ':trackName' => $title, ':collectionName' => $album ));
 $results = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 // copy for manipulation
@@ -47,7 +63,9 @@ foreach($object->results as $track){
 	$collectionName = $track->collectionName;
 	$collectionCensoredName = $track->collectionCensoredName;
 	$trackCensoredName = $track->trackCensoredName;
-	$artistViewUrl = $track->artistViewUrl;
+    if(isset($track->artistViewUrl)){
+	    $artistViewUrl = $track->artistViewUrl;
+    }
 	$collectionViewUrl = $track->collectionViewUrl;
 	$trackViewUrl = $track->trackViewUrl;
 	$artworkUrl30 = $track->artworkUrl30;
@@ -116,5 +134,11 @@ foreach($object->results as $track){
     } */
 }
 
-echo json_encode(array_merge($results, $object->results));
+
+if(isset($object->results)){
+    echo json_encode(array_merge($results, $object->results));
+} else {
+    echo json_encode($results);
+}
+
 	

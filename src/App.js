@@ -76,6 +76,19 @@ const trackColumns = [
       return release.getDate() + "." + (release.getMonth()+1)  + "." + release.getFullYear();
     },
   },
+  {
+    field: "previewUrl",
+    headerName: "Player",
+    width: 200,
+    renderCell: (cellValues) => {
+      return (
+        <audio controls className="player">
+          {" "}
+          <source src={cellValues.value} type="audio/mpeg" />
+        </audio>
+      );
+    },
+  },
 ];
 
 const tracks = [
