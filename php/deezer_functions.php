@@ -5,7 +5,13 @@ function lookup_track( $search_artist, $search_title ){
 	$artist = urlencode($search_artist);
 	$title = urlencode($search_title);
 
-	$url = "http://api.deezer.com/search?q=" . $artist . '&' . $title;
+    if($artist !== ''){
+        $url = "http://api.deezer.com/search?q=" . $artist . '&' . $title;
+    } else {
+        $url = "http://api.deezer.com/search?q=" . $title;
+    }   
+	
+    // echo $url;
 
 
 	$json = file_get_contents($url);

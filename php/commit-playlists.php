@@ -37,7 +37,7 @@ foreach($results as $relation){
 
 // remaining ids need to be added to db
 foreach($playlist_ids as $key => $value){
-    $sql = "INSERT INTO songs_in_playlist (playlist_id,track_id) VALUES(:playlist_id, :track_id)";
+    $sql = "INSERT INTO songs_in_playlist (service, playlist_id,track_id) VALUES('itunes', :playlist_id, :track_id)";
     $sth = $dbh->prepare($sql);
     $sth->execute(array(
         ":playlist_id" => $value,
