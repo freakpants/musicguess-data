@@ -145,6 +145,28 @@ foreach($object->results as $track){
 
 $json_array = array();
 foreach($return_array as $key => $value){
+    $sql = "SELECT relation_id, playlists.id, playlists.name as name FROM songs_in_playlist LEFT JOIN playlists ON songs_in_playlist.playlist_id = playlists.id  WHERE `track_id` = :id";
+    $sth = $dbh->prepare($sql);
+    $sth->execute(array(":id" => $key));
+    $results = $sth->fetchAll(PDO::FETCH_ASSOC);
+    if(is_array($value)){
+        $value['relation_ids'] = array();
+        $value['playlist_names'] = array();
+        foreach($results as $result){
+            array_push($value['relation_ids'], $result['relation_id']);
+            array_push($value['playlist_names'], $result['name']);
+        }
+    } else {
+        $value->relation_ids = array();
+        $value->playlist_names = array();
+        foreach($results as $result){
+            array_push($value->relation_ids, $result['relation_id']);
+            array_push($value->playlist_names, $result['name']);
+        }
+    }
+
+    // $value['playlist_ids'] = $results['playlist_'];
+
     array_push( $json_array, $value);
 }
 

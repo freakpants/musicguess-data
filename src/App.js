@@ -89,7 +89,14 @@ const trackColumns = [
       );
     },
   },
+  {
+    field: "playlist_names",
+    headerName: "Playlists",
+    width: 200,
+    editable: false,
+  },
 ];
+
 
 const tracks = [
   { field: "service", headerName: "service", width: 130, editable: true },
