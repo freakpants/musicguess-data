@@ -14,7 +14,9 @@ function lookup_track( $search_artist, $search_title ){
     /* echo '<pre>';
     var_dump($object->data);
     echo '</pre>'; */
-
+    if(!isset($object->data)){
+        return;
+    }
 	foreach( $object->data as $track ){
         // echo 'entering deezer track';
 		$result_title = utf8_decode($track->title);
