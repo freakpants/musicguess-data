@@ -316,7 +316,17 @@ class App extends React.Component {
         song => song.trackId === cellValues.row.trackId? { ...song, playlist_ids: ids } : song
         )
     })); 
-    console.log(cellValues.row.trackId);
+
+    axios
+    .post(
+      "http://localhost/musicguess-data/commit-playlists.php", {
+        track_id: cellValues.row.trackId, playlist_ids : playlist_ids_selected 
+      }
+    )
+    .then((response) => {
+      // manipulate the response here
+      console.log(response);
+    });
   }
 
   search() {
