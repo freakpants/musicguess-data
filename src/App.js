@@ -224,9 +224,10 @@ class App extends React.Component {
       width: 300,
       editable: false,
       renderCell: (cellValues) => {
+        let value = '';
         // return (<div>No playlists </div>);
-        if (cellValues.value === undefined || cellValues.value.length === 0) {
-          return <div>No playlists</div>;
+        if (cellValues.value !== undefined && cellValues.value.length !== 0) {
+          value = cellValues.value;
         }
         return (
           <FormControl>
