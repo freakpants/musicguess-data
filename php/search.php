@@ -99,7 +99,11 @@ foreach($object->results as $track){
 	$discNumber = $track->discNumber;
 	$trackCount = $track->trackCount;
 	$trackNumber = $track->trackNumber;
-	$trackTimeMillis = $track->trackTimeMillis;
+    if(isset($track->trackTimeMillis)){
+	    $trackTimeMillis = $track->trackTimeMillis;
+    } else{
+        $trackTimeMillis = "";
+    }
 	$country = $track->country;
 	$currency = $track->currency;
 	$primaryGenreName = $track->primaryGenreName;

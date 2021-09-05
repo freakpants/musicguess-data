@@ -72,24 +72,18 @@ function lookup_track_details( $track_id , $country = "US" ){
 		break;	
 	}
 	
-	/*
-		case '':
-			$country = '';
-		break;
-		
-	*/
 	
 	$url = "https://itunes.apple.com/lookup?id=" . $track_id . "&country=" .$country;
 	$json = file_get_contents( $url );
 	$object = json_decode( $json );
 	
-	echo 'url: '.$url.'</br>';
-	echo 'country: '.$country.'</br>';
+	// echo 'url: '.$url.'</br>';
+	// echo 'country: '.$country.'</br>';
 	
 	$track = $object->results[0];
-	echo '<pre>';
-	var_dump($track);
-	echo '</pre>';
+	// echo '<pre>';
+	// var_dump($track);
+	// echo '</pre>';
 	
 	$artistName = utf8_decode($track->artistName);
 	$trackName = utf8_decode($track->trackName);
@@ -134,12 +128,19 @@ function lookup_track_details( $track_id , $country = "US" ){
 		$collectionPrice = 0;
 	}
 	
-	$sql = "REPLACE INTO `itunes_tracks` (`id`, `artistName`, `trackName`, `previewUrl`, `wrapperType`, `kind`, `artistId`,`collectionId`,`collectionName`,`collectionCensoredName`, `trackCensoredName`, `artistViewUrl`,`collectionViewUrl`, `trackViewUrl`, `artworkUrl30`, `artworkUrl60`, `artworkUrl100`, `collectionPrice`, `trackPrice`, `releaseDate`, `collectionExplicitness`, `trackExplicitness`, `discCount`, `discNumber`, `trackCount`, `trackNumber`, `trackTimeMillis`, `country`, `currency`, `primaryGenreName`, `isStreamable`) VALUES ($track_id, :artistName, :trackName, '$previewUrl', '$wrapperType', '$kind', $artistId, $collectionId, :collectionName, :collectionCensoredName, :trackCensoredName, '$artistViewUrl', '$collectionViewUrl', '$trackViewUrl', '$artworkUrl30', '$artworkUrl60', '$artworkUrl100', $collectionPrice, $trackPrice, '$releaseDate', '$collectionExplicitness', '$trackExplicitness', $discCount, $discNumber, $trackCount, $trackNumber, $trackTimeMillis, '$country', '$currency', '$primaryGenreName', $isStreamable)"; 
+	$sql = "REPLACE INTO `itunes_tracks` (`id`, `artistName`, `trackName`, `previewUrl`, `wrapperType`, `kind`, 
+	`artistId`,`collectionId`,`collectionName`,`collectionCensoredName`, `trackCensoredName`, `artistViewUrl`,`collectionViewUrl`, `trackViewUrl`, `artworkUrl30`, 
+	`artworkUrl60`, `artworkUrl100`, `collectionPrice`, `trackPrice`, `releaseDate`, `collectionExplicitness`, `trackExplicitness`, `discCount`, `discNumber`, `trackCount`, 
+	`trackNumber`, `trackTimeMillis`, `country`, `currency`, `primaryGenreName`, `isStreamable`) 
+	VALUES ($track_id, :artistName, :trackName, '$previewUrl', '$wrapperType', '$kind', $artistId, $collectionId, :collectionName, :collectionCensoredName, 
+	:trackCensoredName, '$artistViewUrl', '$collectionViewUrl', '$trackViewUrl', '$artworkUrl30', '$artworkUrl60', '$artworkUrl100', $collectionPrice, $trackPrice, 
+	'$releaseDate', '$collectionExplicitness', '$trackExplicitness', $discCount, $discNumber, $trackCount, $trackNumber, $trackTimeMillis, '$country', '$currency', 
+	'$primaryGenreName', $isStreamable)"; 
 
 	
 	$sth = $dbh->prepare($sql);
 		
-	echo 'executing: ' . $sql . '</br>';
+	// echo 'executing: ' . $sql . '</br>';
 	$sth->execute(array(
 	":trackName" => $trackName,
 	':artistName' => $artistName,
