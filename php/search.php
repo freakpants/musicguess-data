@@ -21,7 +21,7 @@ if(isset($_GET['country'])){
 
 $json = file_get_contents( $url );
 
-$sql = "SELECT id as trackId, previewUrl, artistName, trackName, collectionName, releaseDate, collectionId FROM itunes_tracks 
+$sql = "SELECT id as trackId, previewUrl, artistName, trackName, collectionName, releaseDate, collectionId, checked FROM itunes_tracks 
 WHERE artistName LIKE CONCAT('%', :artistName, '%') AND trackName LIKE CONCAT('%', :trackName, '%') AND collectionName LIKE CONCAT('%', :collectionName, '%') ORDER BY collectionName, releaseDate ASC";
 $sth = $dbh->prepare($sql);
 if(isset($_GET['artist']) && $_GET['artist'] !== ''){
@@ -160,6 +160,7 @@ if(isset($return_array)){
         $sth = $dbh->prepare($sql);
         $sth->execute(array(":id" => $key));
         $results = $sth->fetchAll(PDO::FETCH_ASSOC);
+        // the results from itunes are objects, the results from the database are associative arrays, therefore we need to add them to our list differently
         if(is_array($value)){
             $value['relation_ids'] = array();
             $value['playlist_ids'] = array();
@@ -168,6 +169,7 @@ if(isset($return_array)){
                 array_push($value['playlist_ids'], $result['id']);
             }
         } else {
+            $value->checked = false;
             $value->relation_ids = array();
             $value->playlist_ids = array();
             foreach($results as $result){
