@@ -45,6 +45,7 @@ const columns = [
   {
     field: "track_count",
     headerName: "Tracks",
+    type: "number",
     width: 120,
     editable: true,
   },

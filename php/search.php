@@ -125,7 +125,11 @@ foreach($object->results as $track){
     } else {
         $trackPrice = 0;
     }
-	$releaseDate = $track->releaseDate;
+    if(isset($track->releaseDate)){
+	    $releaseDate = $track->releaseDate;
+    } else {
+        $releaseDate = '';
+    }
 	$collectionExplicitness = $track->collectionExplicitness;
 	$trackExplicitness = $track->trackExplicitness;
 	$discCount = $track->discCount;
@@ -139,7 +143,12 @@ foreach($object->results as $track){
     }
 	$country = $track->country;
 	$currency = $track->currency;
-	$primaryGenreName = $track->primaryGenreName;
+    if(isset($track->primaryGenreName)){
+        $primaryGenreName = $track->primaryGenreName;
+    } else {
+        $primaryGenreName = "";
+    }
+	
 	$isStreamable = $track->isStreamable ? 1 : 0;
 	
 	if($artistId === 0 || $artistId === '' || $artistId === NULL){
