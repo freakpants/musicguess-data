@@ -58,11 +58,11 @@ function markTrackAsChecked(track_id, artist, title, album) {
       "http://localhost/musicguess-data/mark_track_as_checked.php?id=" +
         track_id +
         "&artist=" +
-        artist +
+        encodeURIComponent(artist) +
         "&title=" +
-        title +
+        encodeURIComponent(title) +
         "&album=" +
-        album
+        encodeURIComponent(album)
     )
     .then((response) => {
       // manipulate the response here
@@ -303,6 +303,10 @@ class App extends React.Component {
   }
 
   search() {
+    this.setState({
+      locationTitle: "searching...",
+      location: "searching",
+    });
     axios
       .post(
         "http://localhost/musicguess-data/search.php?artist=" +

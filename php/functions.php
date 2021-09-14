@@ -15,9 +15,9 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	
 
 	
-	$sth = $dbh->prepare($sql);
-	$sth->execute( array(':title' => $original_title, ':artist_name' => $artist ) );
-	$inner_results = $sth->fetchAll();
+	$select_deezer_album_statement = $dbh->prepare($sql);
+	$select_deezer_album_statement->execute( array(':title' => $original_title, ':artist_name' => $artist ) );
+	$inner_results = $select_deezer_album_statement->fetchAll();
 	
 	foreach( $inner_results as $result ){
 		$album_art = $result['cover_xl'];
@@ -105,8 +105,8 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 		$title = $result['title'];
 	}
 
-	$sql = "SELECT image FROM itunes_album_image_replacements WHERE itunes_collection_id = $collectionId";
-	$sth = $dbh->prepare($sql);
+	$replacement_sql = "SELECT image FROM itunes_album_image_replacements WHERE itunes_collection_id = $collectionId";
+	$sth = $dbh->prepare($replacement_sql);
 	$sth->execute();
 	$inner_results = $sth->fetchAll();
 	foreach( $inner_results as $result ){
@@ -115,7 +115,19 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	
 	// echo 'album art:'.$album_art.'</br>';
 	
-	return array('album_art' => $album_art, 'title' => $title_replaced);
+	// get the output before debugDumpParams() get executed 
+	$before = ob_get_contents();
+	//start a new buffer
+	ob_start();
+	// dump params now
+	$select_deezer_album_statement->debugDumpParams();
+	// save the output in a new variable $data
+	$data = ob_get_contents();
+	// clean the output screen
+	ob_end_clean();
+
+
+	return array('album_art' => $album_art, 'title' => $title_replaced, 'sql' => $sql, 'select_deezer_album_statement' => $data);
 } 			
 	
 

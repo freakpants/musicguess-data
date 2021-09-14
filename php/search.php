@@ -7,6 +7,7 @@ global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 
 $meta_array = array();
+$meta_array['album_datas'] = array();
 
 $term = urlencode(utf8_encode($_GET['artist'])).'+'.urlencode(utf8_encode($_GET['title'])).'+'.urlencode(utf8_encode($_GET['album']));
 
@@ -51,6 +52,17 @@ $results = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 foreach($results as $result){
     $return_array[$result['trackId']] = $result;
+    
+    // attempt to get album art from deezer
+	$album_data = get_album_art($result['artistName'],$result['collectionName'],$result['collectionId']);
+	$album_art = $album_data['album_art'];
+    
+    array_push($meta_array['album_datas'], $album_data);
+
+    // save album art
+    if(isset($album_art) && $album_art !== ''){
+        copy($album_art, '../musicguess/game/album_art/' . $collectionId . ".jpg" );
+    }
 }
 
 
@@ -135,6 +147,8 @@ foreach($object->results as $track){
     // attempt to get album art from deezer
 	$album_data = get_album_art($artistName,$collectionName,$collectionId);
 	$album_art = $album_data['album_art'];
+    
+    array_push($meta_array['album_datas'], $album_data);
 
     // save album art
     if(isset($album_art) && $album_art !== ''){
