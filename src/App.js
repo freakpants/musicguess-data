@@ -51,85 +51,6 @@ const columns = [
 
 const playlists = [1, 2, 3, 4, 5, 6];
 
-const tracks = [
-  { field: "service", headerName: "service", width: 130, editable: true },
-  { field: "artistName", headerName: "Artist", width: 200, editable: true },
-  { field: "trackName", headerName: "Title", width: 200, editable: true },
-  { field: "collectionName", headerName: "Album", width: 200, editable: true },
-  {
-    field: "collectionId",
-    headerName: "Cover",
-    width: 200,
-    renderCell: (cellValues) => {
-      const src =
-        "http://localhost/musicguess/game/album_art/" +
-        cellValues.value +
-        ".jpg";
-      return <img className="coverArt" src={src} />;
-    },
-  },
-  {
-    field: "previewUrl",
-    headerName: "Player",
-    width: 200,
-    renderCell: (cellValues) => {
-      return (
-        <audio controls className="player">
-          {" "}
-          <source src={cellValues.value} type="audio/mpeg" />
-        </audio>
-      );
-    },
-  },
-  {
-    field: "id",
-    headerName: "Delete",
-    width: 130,
-    renderCell: (cellValues) => {
-      return (
-        <IconButton
-          className="delete"
-          onClick={() => deleteInAllPlaylists(cellValues.value)}
-          aria-label="delete"
-        >
-          <DeleteIcon fontSize="large" />
-        </IconButton>
-      );
-    },
-  },
-  {
-    field: "checked",
-    headerName: "Checked",
-    width: 140,
-    renderCell: (cellValues) => {
-      const value = cellValues.value;
-      if (value === "0") {
-        return (
-          <IconButton
-            onClick={() =>
-              markTrackAsChecked(
-                cellValues.row.id,
-                cellValues.row.artistName,
-                cellValues.row.trackName,
-                cellValues.row.collectionName
-              )
-            }
-            className="cancel"
-          >
-            <CancelIcon fontSize="large" />
-          </IconButton>
-        );
-      } else {
-        return (
-          <IconButton className="checked">
-            <CheckCircleIcon fontSize="large" />
-          </IconButton>
-        );
-      }
-    },
-  },
-];
-
 function markTrackAsChecked(track_id, artist, title, album) {
   console.log("trying to mark track " + track_id + " as checked.");
   axios
@@ -264,6 +185,52 @@ class App extends React.Component {
         );
       },
     },
+    {
+      field: "checked",
+      headerName: "Checked",
+      width: 140,
+      renderCell: (cellValues) => {
+        const value = cellValues.value;
+        if (value === "0") {
+          return (
+            <IconButton
+              onClick={() =>
+                markTrackAsChecked(
+                  cellValues.row.id,
+                  cellValues.row.artistName,
+                  cellValues.row.trackName,
+                  cellValues.row.collectionName
+                )
+              }
+              className="cancel"
+            >
+              <CancelIcon fontSize="large" />
+            </IconButton>
+          );
+        } else {
+          return (
+            <IconButton className="checked">
+              <CheckCircleIcon fontSize="large" />
+            </IconButton>
+          );
+        }
+      },
+    },{
+      field: "id",
+      headerName: "Delete",
+      width: 130,
+      renderCell: (cellValues) => {
+        return (
+          <IconButton
+            className="delete"
+            onClick={() => deleteInAllPlaylists(cellValues.value)}
+            aria-label="delete"
+          >
+            <DeleteIcon fontSize="large" />
+          </IconButton>
+        );
+      },
+    },
   ];
 
   constructor(props) {
@@ -283,7 +250,6 @@ class App extends React.Component {
           collectionName: "Album",
         },
       ],
-      playlist: [{ id: 0, service: "itunessss" }],
       location: "overview",
       locationTitle: "Playlist Overview",
       selectedPlaylist: 0,
@@ -379,7 +345,7 @@ class App extends React.Component {
         // manipulate the response here
         // this.setState({playlist: response.data.tracks});
         this.setState({
-          playlist: response.data.tracks,
+          songs: response.data.tracks,
           locationTitle: response.data[0].name,
           location: "singlePlaylist",
         });
@@ -454,8 +420,8 @@ class App extends React.Component {
           )}
           {this.state.location === "singlePlaylist" && (
             <DataGrid
-              rows={this.state.playlist}
-              columns={tracks}
+              rows={this.state.songs}
+              columns={this.trackColumns}
               pageSize={4}
               rowsPerPageOptions={[5]}
               rowHeight={200}
