@@ -6,11 +6,17 @@ require("functions.php");
 global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 
+$meta_array = array();
+
 $term = urlencode(utf8_encode($_GET['artist'])).'+'.urlencode(utf8_encode($_GET['title'])).'+'.urlencode(utf8_encode($_GET['album']));
 
 // lookup the track in deezer
 // echo 'searching';
 lookup_track( $_GET['artist'], $_GET['title'] );
+
+// lookup the album in deezer
+$meta_array['album_search_url'] = lookup_album_on_deezer($_GET['album']);
+
 
 if(isset($_GET['country'])){
     $url = 'https://itunes.apple.com/search?term='.$term.'&entity=song&country='.$_GET['country'];
@@ -72,6 +78,9 @@ foreach($object->results as $track){
 	$artistId = $track->artistId;
 	$collectionId = $track->collectionId;
 	$collectionName = $track->collectionName;
+
+    lookup_album_on_deezer($collectionName);
+
 	$collectionCensoredName = $track->collectionCensoredName;
 	$trackCensoredName = $track->trackCensoredName;
     if(isset($track->artistViewUrl)){
@@ -169,7 +178,7 @@ if(isset($return_array)){
                 array_push($value['playlist_ids'], $result['id']);
             }
         } else {
-            $value->checked = false;
+            $value->checked = "0";
             $value->relation_ids = array();
             $value->playlist_ids = array();
             foreach($results as $result){
@@ -183,8 +192,7 @@ if(isset($return_array)){
         array_push( $json_array, $value);
     }
 }
-
-
+$meta_array['tracks'] = $json_array;
 // echo json_encode($results);
-echo json_encode($json_array);
+echo json_encode($meta_array);
 	

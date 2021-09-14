@@ -317,7 +317,7 @@ class App extends React.Component {
       .then((response) => {
         // manipulate the response here
         console.log(response.data.results);
-        let songsWithId = response.data;
+        let songsWithId = response.data.tracks;
         songsWithId.forEach(function (part, index, songsWithId) {
           this[index].id = part.trackId;
         }, songsWithId);
@@ -429,11 +429,20 @@ class App extends React.Component {
           )}
           {this.state.location !== "overview" && (
             <button
-              onClick={(e) =>
-                this.setState({
+              onClick={(e) => {
+                axios
+                .post("http://localhost/musicguess-data/playlists.php")
+                .then((response) => {
+                  // manipulate the response here
+                  this.setState({ playlists: response.data });
+                  console.log(response.data);
+                });
+                 this.setState({
                   location: "overview",
                   locationTitle: "Playlist Overview",
-                })
+                });
+              }
+
               }
             >
               Go back to Overview
