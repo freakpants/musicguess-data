@@ -48,6 +48,18 @@ if(isset($_GET['album']) && $_GET['album'] !== ''){
 }
 
 $sth->execute( array(':artistName' => $artist, ':trackName' => $title, ':collectionName' => $album ));
+
+// get the output before debugDumpParams() get executed 
+$before = ob_get_contents();
+//start a new buffer
+ob_start();
+// dump params now
+$sth->debugDumpParams();
+// save the output in a new variable $data
+$meta_array['sql_track_lookup'] = ob_get_contents();
+// clean the output screen
+ob_end_clean();
+
 $results = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 foreach($results as $result){
@@ -61,7 +73,7 @@ foreach($results as $result){
 
     // save album art
     if(isset($album_art) && $album_art !== ''){
-        copy($album_art, '../musicguess/game/album_art/' . $collectionId . ".jpg" );
+        copy($album_art, '../musicguess/game/album_art/' . $result['collectionId'] . ".jpg" );
     }
 }
 
@@ -158,16 +170,17 @@ foreach($object->results as $track){
 	$sth = $dbh->prepare($sql);
 		
 	// echo 'executing: ' . $sql . '</br>';
-	$sth->execute(array(
-	":trackName" => $trackName,
-	':artistName' => $artistName,
-	':trackCensoredName' => $trackCensoredName, 
-	':collectionName' => $collectionName,
-	':collectionCensoredName' => $collectionCensoredName
-	));
 
+    // skip adding the track to the array if it was already returned by the search, also dont update the database
     if(! isset($return_array[$track->trackId])){
         $return_array[$track->trackId] = $track;
+        $sth->execute(array(
+            ":trackName" => $trackName,
+            ':artistName' => $artistName,
+            ':trackCensoredName' => $trackCensoredName, 
+            ':collectionName' => $collectionName,
+            ':collectionCensoredName' => $collectionCensoredName
+            ));
     }
     /* foreach ($results as $result){
         if($result['trackId'] !== $track->trackId){
