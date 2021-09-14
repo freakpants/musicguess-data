@@ -7,8 +7,12 @@ function lookup_album_on_deezer( $search_album){
 
     $url = 'https://api.deezer.com/search?q=album:"'.$search_album.'"';
 
-    $json = file_get_contents($url);
-	$object = json_decode($json);
+    $json = @file_get_contents($url);
+
+    if($json != FALSE){
+        $object = json_decode($json);
+    }
+	    
 
     /* echo '<pre>';
     var_dump($object->data);

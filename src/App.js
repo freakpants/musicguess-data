@@ -16,6 +16,7 @@ import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import Chip from "@material-ui/core/Chip";
 import { ContactSupportOutlined } from "@material-ui/icons";
+import LoopIcon from '@material-ui/icons/Loop';
 
 /* 
 Command to copy php scripts
@@ -170,7 +171,7 @@ class App extends React.Component {
               renderValue={(selected) => (
                 <div>
                   {selected.map((value) => (
-                    <Chip key={value} label={this.state.playlists[value].name} />
+                    <Chip key={value} label={this.state.playlists.filter(list => { return list.id === value} ).map(list => list.name)} />
                   ))}
                 </div>
               )}
@@ -215,7 +216,29 @@ class App extends React.Component {
           );
         }
       },
-    },{
+    } ,   {
+      field: "update",
+      headerName: "Update",
+      width: 140,
+      renderCell: (cellValues) => {
+          return (
+            <IconButton
+              onClick={() =>
+                markTrackAsChecked(
+                  cellValues.row.id,
+                  cellValues.row.artistName,
+                  cellValues.row.trackName,
+                  cellValues.row.collectionName
+                )
+              }
+              className="refresh"
+            >
+              <LoopIcon fontSize="large" />
+            </IconButton>
+          );
+      },
+    }
+    ,{
       field: "id",
       headerName: "Delete",
       width: 130,
