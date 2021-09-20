@@ -16,7 +16,7 @@ function create_playlist_info(){
 	
 	global $dbh;
 	
-	$sql = "SELECT id, name, description FROM playlists WHERE public = 1 ORDER BY RAND()";
+	$sql = "SELECT id, name, description, new FROM playlists WHERE public = 1 ORDER BY name ASC";
 	//$sql = "SELECT id, name, description FROM playlists";
 
 	$sth = $dbh->prepare($sql);
@@ -30,6 +30,7 @@ function create_playlist_info(){
 		$playlist_object->name = $playlist['name'];
 		$playlist_object->id = $playlist['id'];
 		$playlist_object->description = $playlist['description'];
+		$playlist_object->new = $playlist['new'];
 		
 		// determine amount of tracks
 		$id = $playlist['id'];
