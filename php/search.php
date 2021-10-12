@@ -91,10 +91,13 @@ $counter = 0;
 foreach($object->results as $track){
 	$artistName = $track->artistName;
 	$trackName = $track->trackName;
-    if(isset($track->previewUrl)){
-        $previewUrl = $track->previewUrl;
+    
+    if(!(isset($track->previewUrl)) || strpos($track->previewUrl, "http\:") !== false ){
+        // don't add tracks that have no preview url, because we cant play those
+        // also don't add tracks that are not on https
+        continue;
     } else {
-        $previewUrl = "";
+        $previewUrl = $track->previewUrl;
     }
 
 	$wrapperType = $track->wrapperType;
