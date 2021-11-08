@@ -9,7 +9,12 @@ $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 $meta_array = array();
 $meta_array['album_datas'] = array();
 
-$term = urlencode(utf8_encode($_GET['artist'])).'+'.urlencode(utf8_encode($_GET['title'])).'+'.urlencode(utf8_encode($_GET['album']));
+/* echo '<pre>';
+var_dump($_GET);
+echo '</pre>'; */
+
+// $term = urlencode(utf8_encode($_GET['artist'])).'+'.urlencode(utf8_encode($_GET['title'])).'+'.urlencode(utf8_encode($_GET['album']));
+$term = urlencode($_GET['artist']).'+'.urlencode($_GET['title']).'+'.urlencode($_GET['album']);
 
 // lookup the track in deezer
 // echo 'searching';
@@ -25,8 +30,12 @@ if(isset($_GET['country'])){
     $url = 'https://itunes.apple.com/search?term='.$term.'&entity=song';
 }
 
-
+// echo $url.'</br>';
 $json = file_get_contents( $url );
+
+/* echo '<pre>';
+var_dump($json);
+echo '</pre>'; */
 
 $sql = "SELECT id as trackId, previewUrl, artistName, trackName, collectionName, releaseDate, collectionId, checked FROM itunes_tracks 
 WHERE artistName LIKE CONCAT('%', :artistName, '%') AND trackName LIKE CONCAT('%', :trackName, '%') AND collectionName LIKE CONCAT('%', :collectionName, '%') ORDER BY collectionName, releaseDate ASC";
