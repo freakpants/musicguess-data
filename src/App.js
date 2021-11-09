@@ -294,6 +294,17 @@ class App extends React.Component {
                   cellValues.row.title)}}>search</button>
         );
       },
+    },
+    {
+      field: "delete",
+      headerName: "delete",
+      width: 200,
+      renderCell: (cellValues) => {
+        return (
+<button onClick={() => {this.deleteLookup(  cellValues.row.id,
+                  cellValues.row.title)}}>delete</button>
+        );
+      },
     }
   ];
 
@@ -329,6 +340,7 @@ class App extends React.Component {
     this.selectPlaylist = this.selectPlaylist.bind(this);
     this.search = this.search.bind(this);
     this.lookupSearch = this.lookupSearch.bind(this);
+    this.deleteLookup = this.deleteLookup.bind(this);
     this.handlePlaylistSelect = this.handlePlaylistSelect.bind(this);
 
     axios
@@ -371,6 +383,17 @@ class App extends React.Component {
 
   lookupSearch(searchArtist, searchTitle){
     this.setState({searchArtist: searchArtist, searchTitle: searchTitle, searchMode: "local"}, () => {this.search();});
+  }
+
+  
+  deleteLookup(id){
+    axios
+    .post(
+      "http://localhost/musicguess-data/delete-lookup.php?id=" + id, 
+    )
+    .then((response) => {
+      this.goToLookup();
+    });
   }
 
   search() {
@@ -464,9 +487,6 @@ class App extends React.Component {
               <button onClick={this.goToSelectedPlaylist}>
                 Go to selected Playlist
               </button>
-              <button onClick={this.goToLookup}>
-                Go to Lookup
-              </button>
               <TextField
                 id="artist"
                 label="artist"
@@ -554,6 +574,9 @@ class App extends React.Component {
               Go back to Overview
             </button>
           )}
+          <button onClick={this.goToLookup}>
+            Go to Lookup
+          </button>
         </div>
       </div>
     );
