@@ -15,7 +15,7 @@ $results = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 $playlist = $results;
 
-$sql = "SELECT service, playlist_id, track_id as trackId, track_id as id, relation_id, itunes_tracks.releaseDate as releaseDate, itunes_tracks.checked,  itunes_tracks.collectionId, itunes_tracks.artistName, itunes_tracks.previewUrl, itunes_tracks.trackName, itunes_tracks.collectionName FROM songs_in_playlist LEFT JOIN itunes_tracks ON songs_in_playlist.track_id = itunes_tracks.id  WHERE `playlist_id` = :id";
+$sql = "SELECT service, itunes_tracks.artworkUrl100 as itunesCover, playlist_id, track_id as trackId, track_id as id, relation_id, itunes_tracks.releaseDate as releaseDate, itunes_tracks.checked,  itunes_tracks.collectionId, itunes_tracks.artistName, itunes_tracks.previewUrl, itunes_tracks.trackName, itunes_tracks.collectionName FROM songs_in_playlist LEFT JOIN itunes_tracks ON songs_in_playlist.track_id = itunes_tracks.id  WHERE `playlist_id` = :id";
 $sth = $dbh->prepare($sql);
 $sth->execute(array(":id" => $_GET['id']));
 $results = $sth->fetchAll(PDO::FETCH_ASSOC);
