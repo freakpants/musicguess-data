@@ -11,12 +11,15 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	
 	
 	
-	$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE CONCAT('%', :title, '%') AND artist_name LIKE CONCAT('%', :artist_name, '%') LIMIT 1";
+	// $sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE CONCAT('%', :title, '%') AND artist_name LIKE CONCAT('%', :artist_name, '%') LIMIT 1";
 	
-
+	$query_title = utf8_decode($original_title);
+	$query_artist =  utf8_decode($artist);
+	
+	$sql = "SELECT cover_xl, title FROM deezer_albums WHERE title LIKE %$query_title% AND artist_name LIKE %$query_artist% LIMIT 1";
 	
 	$select_deezer_album_statement = $dbh->prepare($sql);
-	$select_deezer_album_statement->execute( array(':title' => utf8_decode($original_title), ':artist_name' => utf8_decode($artist) ) );
+	$select_deezer_album_statement->execute();
 	$inner_results = $select_deezer_album_statement->fetchAll();
 	
 	foreach( $inner_results as $result ){
