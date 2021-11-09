@@ -4,6 +4,7 @@ header('Content-type: application/json');
 
 $formData = json_decode(file_get_contents('php://input'));
 $playlist_ids = $formData->playlist_ids;
+$playlist_ids_clone = $formData->playlist_ids;
 
 require("connect.php");
 global $dbh;
@@ -32,6 +33,13 @@ foreach($results as $relation){
         $sth->execute(array(
             ":relation_id" => $relation['relation_id'],
         ));
+
+        // if a track was removed, the playlist also needs to be updated
+        $sql = "UPDATE playlists SET update_needed = 1 WHERE id = :playlist_id";
+        $sth = $dbh->prepare($sql);
+        $sth->execute(array(
+            ":playlist_id" => $relation['playlist_id'],
+        ));
     }
 }
 
@@ -42,6 +50,15 @@ foreach($playlist_ids as $key => $value){
     $sth->execute(array(
         ":playlist_id" => $value,
         ":track_id" => $formData->track_id
+    ));
+}
+
+// set all playlists that were passed to update
+foreach($playlist_ids_clone as $key => $value){
+    $sql = "UPDATE playlists SET update_needed = 1 WHERE id = :playlist_id";
+    $sth = $dbh->prepare($sql);
+    $sth->execute(array(
+        ":playlist_id" => $value,
     ));
 }
 ?>
