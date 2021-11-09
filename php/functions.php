@@ -16,7 +16,7 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 
 	
 	$select_deezer_album_statement = $dbh->prepare($sql);
-	$select_deezer_album_statement->execute( array(':title' => $original_title, ':artist_name' => $artist ) );
+	$select_deezer_album_statement->execute( array(':title' => utf8_decode($original_title), ':artist_name' => utf8_decode($artist) ) );
 	$inner_results = $select_deezer_album_statement->fetchAll();
 	
 	foreach( $inner_results as $result ){

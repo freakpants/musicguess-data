@@ -34,6 +34,8 @@ function create_playlist( $playlist_id ){
 	
 	global $dbh;
 	
+	// $sql = "SELECT track_id, service FROM songs_in_playlist WHERE playlist_id = $playlist_id AND track_id = 162697321 ORDER by track_id ASC";
+	// $sql = "SELECT track_id, service FROM songs_in_playlist WHERE playlist_id = $playlist_id AND track_id = 255189035 ORDER by track_id ASC";
 	$sql = "SELECT track_id, service FROM songs_in_playlist WHERE playlist_id = $playlist_id ORDER by track_id ASC";
 	$sth = $dbh->prepare($sql);
 	$sth->execute();
@@ -86,8 +88,13 @@ function create_playlist( $playlist_id ){
 			}
 		}
 		
-		var_dump($results['artist']);
-		
+		$album_cover_exists = file_exists('../musicguess/game/album_art/' . $results['collectionId'] . '.jpg');
+
+		echo '<pre>';
+		var_dump($results);
+		var_dump($album_data);
+		echo '</pre>';
+
 		if( $album_art != '' ){
 			$replaced_image++;
 			$results['album_art'] = $album_art;
@@ -99,7 +106,17 @@ function create_playlist( $playlist_id ){
 			echo 'Kept old album art for '.$results['artist'].' - '.$results['title'].' on album '.$results['album'].'</br>';
 		}
 
-		copy($album_art, '../musicguess/game/album_art/' . $results['collectionId'] . ".jpg" );
+		if(!$album_cover_exists){
+			if($album_art != ''){
+				// copy the deezer art
+				copy($album_art, '../musicguess/game/album_art/' . $results['collectionId'] . ".jpg" );
+			} else {
+				// copy the itunes art
+				copy(preg_replace("/100x100bb\.jpg/","1000x1000bb.jpg",$results['album_art']), '../musicguess/game/album_art/' . $results['collectionId'] . ".jpg" );
+			}
+			
+		}
+		
 		$results['album_art'] = 'album_art/' . $results['collectionId'] . ".jpg";
 
 		echo '</br></br>';
