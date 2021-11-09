@@ -127,7 +127,7 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	ob_end_clean();
 
 
-	return array('album_art' => $album_art, 'title' => $title_replaced, 'sql' => $sql, 'select_deezer_album_statement' => $data);
+	return array('album_art' => $album_art, 'title' => $title_replaced, 'sql' => $sql, 'select_deezer_album_statement' => utf8_encode($data));
 } 			
 	
 

@@ -40,6 +40,8 @@ if($search_mode === 'live'){
     /* echo '<pre>';
     var_dump($json);
     echo '</pre>'; */
+} else {
+    // echo 'search mode local';
 }
 
 $sql = "SELECT id as trackId, artworkUrl100 as itunesCover, previewUrl, artistName, trackName, collectionName, releaseDate, collectionId, checked FROM itunes_tracks 
@@ -73,6 +75,11 @@ $sth->debugDumpParams();
 $meta_array['sql_track_lookup'] = ob_get_contents();
 // clean the output screen
 ob_end_clean();
+
+/* echo 'dumped sql output';
+echo '<pre>';
+var_dump($meta_array);
+echo '</pre>'; */
 
 $results = $sth->fetchAll(PDO::FETCH_ASSOC);
 
@@ -250,5 +257,9 @@ if(isset($return_array)){
 }
 $meta_array['tracks'] = $json_array;
 // echo json_encode($results);
+// echo 'we got to the encode';
+/* echo '<pre>';
+var_dump($meta_array);
+echo '</pre>'; */
 echo json_encode($meta_array);
 	
