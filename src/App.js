@@ -122,6 +122,17 @@ class App extends React.Component {
       },
     },
     {
+      field: "itunesCover",
+      headerName: "itunes",
+      width: 200,
+      renderCell: (cellValues) => {
+        // 1000x1000bb.jpg
+        const src = cellValues.value.replace("100x100bb.jpg", "1000x1000bb.jpg");
+        // cp -rf ~/musicguess-data/php/* /mnt/c/gamerbased/htdocs/musicguess-data/  
+        return <img className="coverArt" src={src} />;
+      },
+    },
+    {
       field: "releaseDate",
       headerName: "Release",
       width: 130,
@@ -259,6 +270,32 @@ class App extends React.Component {
       },
     },
   ];
+  lookupColumns = [
+    { field: "id", headerName: "ID" },
+    {
+      field: "artist",
+      headerName: "Artist",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "search",
+      headerName: "Search",
+      width: 200,
+      renderCell: (cellValues) => {
+        return (
+<button onClick={() => {this.lookupSearch(  cellValues.row.artist,
+                  cellValues.row.title)}}>search</button>
+        );
+      },
+    }
+  ];
 
   constructor(props) {
     super(props);
@@ -284,11 +321,14 @@ class App extends React.Component {
       searchTitle: "",
       searchAlbum: "",
       searchCountry: "",
+      searchMode: "live",
     };
 
     this.goToSelectedPlaylist = this.goToSelectedPlaylist.bind(this);
+    this.goToLookup = this.goToLookup.bind(this);
     this.selectPlaylist = this.selectPlaylist.bind(this);
     this.search = this.search.bind(this);
+    this.lookupSearch = this.lookupSearch.bind(this);
     this.handlePlaylistSelect = this.handlePlaylistSelect.bind(this);
 
     axios
@@ -329,6 +369,10 @@ class App extends React.Component {
     });
   }
 
+  lookupSearch(searchArtist, searchTitle){
+    this.setState({searchArtist: searchArtist, searchTitle: searchTitle, searchMode: "local"}, () => {this.search();});
+  }
+
   search() {
     this.setState({
       locationTitle: "searching...",
@@ -343,7 +387,9 @@ class App extends React.Component {
           "&album=" +
           this.state.searchAlbum +
           "&country=" +
-          this.state.searchCountry
+          this.state.searchCountry +
+          "&searchMode=" +
+          this.state.searchMode
       )
       .then((response) => {
         // manipulate the response here
@@ -364,6 +410,23 @@ class App extends React.Component {
   selectPlaylist(e) {
     let id = e.id;
     this.setState({ selectedPlaylist: id });
+  }
+
+  goToLookup(e) {
+    axios
+      .post(
+        "http://localhost/musicguess-data/lookup.php?list=true"
+      )
+      .then((response) => {
+        // manipulate the response here
+        // this.setState({playlist: response.data.tracks});
+        this.setState({
+          songs: response.data,
+          locationTitle: "Lookup List",
+          location: "lookupList",
+        });
+        console.log(response.data);
+      });
   }
 
   goToSelectedPlaylist(e) {
@@ -400,6 +463,9 @@ class App extends React.Component {
               />{" "}
               <button onClick={this.goToSelectedPlaylist}>
                 Go to selected Playlist
+              </button>
+              <button onClick={this.goToLookup}>
+                Go to Lookup
               </button>
               <TextField
                 id="artist"
@@ -453,6 +519,15 @@ class App extends React.Component {
             <DataGrid
               rows={this.state.songs}
               columns={this.trackColumns}
+              pageSize={4}
+              rowsPerPageOptions={[5]}
+              rowHeight={200}
+            />
+          )}
+          {this.state.location === "lookupList" && (
+            <DataGrid
+              rows={this.state.songs}
+              columns={this.lookupColumns}
               pageSize={4}
               rowsPerPageOptions={[5]}
               rowHeight={200}
