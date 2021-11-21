@@ -22,7 +22,8 @@ import LoopIcon from '@material-ui/icons/Loop';
 Command to copy php scripts
 cp -rf ~/musicguess-data/php/* /mnt/c/gamerbased/htdocs/musicguess-data/ 
 Get broken tracks (http instead of https)
-SELECT id, itunes_tracks.trackName FROM songs_in_playlist LEFT JOIN itunes_tracks ON songs_in_playlist.track_id = itunes_tracks.id WHERE itunes_tracks.previewUrl LIKE '%http\:%';
+SELECT DISTINCT id, itunes_tracks.artistName, itunes_tracks.trackName FROM songs_in_playlist LEFT JOIN itunes_tracks ON songs_in_playlist.track_id = itunes_tracks.id WHERE itunes_tracks.previewUrl LIKE '%http\:%';
+SELECT * FROM itunes_tracks WHERE itunes_tracks.previewUrl LIKE '%http\:%';
 */
 
 const columns = [
