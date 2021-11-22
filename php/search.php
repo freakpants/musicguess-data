@@ -6,6 +6,9 @@ require("functions.php");
 global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 
+$sql = "SET NAMES 'utf-8'";
+$dbh->query($sql);
+
 $meta_array = array();
 $meta_array['album_datas'] = array();
 
@@ -88,9 +91,11 @@ foreach($results as $result){
     
     // attempt to get album art from deezer
 	$album_data = get_album_art($result['artistName'],$result['collectionName'],$result['collectionId']);
-	$album_art = $album_data['album_art'];
+	// $album_art = $album_data['album_art'];
+
+    $utfEncodedArray = array_map("utf8_encode", $album_data );
     
-    array_push($meta_array['album_datas'], $album_data);
+    array_push($meta_array['album_datas'], $utfEncodedArray );
 
     // save album art
     // this should be done in the live search already
@@ -227,6 +232,7 @@ if($search_mode === 'live'){
 
 $json_array = array();
 if(isset($return_array)){
+    // echo 'merging return array';
     foreach($return_array as $key => $value){
         $sql = "SELECT relation_id, playlists.id as id FROM songs_in_playlist LEFT JOIN playlists ON songs_in_playlist.playlist_id = playlists.id  WHERE `track_id` = :id";
         $sth = $dbh->prepare($sql);
@@ -262,4 +268,3 @@ $meta_array['tracks'] = $json_array;
 var_dump($meta_array);
 echo '</pre>'; */
 echo json_encode($meta_array);
-	

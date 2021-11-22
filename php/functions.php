@@ -98,7 +98,7 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	// echo "Looking for: ".$artist." - ".$title_replaced."\r\n";
 	
 	$sth = $dbh->prepare($sql);
-	$sth->execute( array(':title' => $title_replaced, ':artist_name' => $artist ) );
+	$sth->execute( );
 	
 	// var_dump("SELECT cover_xl, title FROM deezer_albums WHERE title LIKE '%".$title_replaced."%' AND artist_name LIKE '%".$artist."%' LIMIT 1");
 	
@@ -130,7 +130,7 @@ function get_album_art($artist = '', $title = '', $collectionId = 0){
 	ob_end_clean();
 
 
-	return array('album_art' => $album_art, 'title' => $title_replaced, 'sql' => $sql, 'select_deezer_album_statement' => utf8_encode($data));
+	return array('album_art' => $album_art, 'title' => $title_replaced, 'sql' => utf8_encode($sql), 'select_deezer_album_statement' => utf8_encode($data));
 } 			
 	
 
