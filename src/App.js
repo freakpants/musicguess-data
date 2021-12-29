@@ -24,6 +24,18 @@ cp -rf ~/musicguess-data/php/* /mnt/c/gamerbased/htdocs/musicguess-data/
 Get broken tracks (http instead of https)
 SELECT DISTINCT id, itunes_tracks.artistName, itunes_tracks.trackName FROM songs_in_playlist LEFT JOIN itunes_tracks ON songs_in_playlist.track_id = itunes_tracks.id WHERE itunes_tracks.previewUrl LIKE '%http\:%';
 SELECT * FROM itunes_tracks WHERE itunes_tracks.previewUrl LIKE '%http\:%';
+
+get playlist statistics
+
+by playlist
+SELECT playlists.name, COUNT(*) FROM events LEFT JOIN playlists ON events.playlist_id = playlists.id GROUP BY playlists.name
+
+by country code
+SELECT cc, COUNT(*) FROM events group BY cc ORDER BY `COUNT(*)` DESC
+
+country name + number of events
+SELECT events.cc, countries.name, COUNT(*) FROM events LEFT JOIN countries ON events.cc = countries.code GROUP BY countries.name
+
 */
 
 const columns = [
