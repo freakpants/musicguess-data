@@ -29,6 +29,7 @@ get playlist statistics
 
 by playlist
 SELECT playlists.name, COUNT(*) FROM events LEFT JOIN playlists ON events.playlist_id = playlists.id GROUP BY playlists.name
+SELECT playlists.name, COUNT(*) FROM events LEFT JOIN playlists ON events.playlist_id = playlists.id WHERE  events.timestamp > '2022-01-04 10:00:00' GROUP BY playlists.name
 
 by country code
 SELECT cc, COUNT(*) FROM events group BY cc ORDER BY `COUNT(*)` DESC
