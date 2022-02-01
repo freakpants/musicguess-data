@@ -8,7 +8,9 @@ global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 
 
-$sql = "SELECT * FROM  `events`";
+$sql = "SELECT * FROM  `events` WHERE expanded = 0 AND id != '38140' AND id != '52204' ORDER BY id DESC LIMIT 8000";
+// $sql = "SELECT * FROM  `events` WHERE expanded = 0 ORDER BY id DESC LIMIT 8000";
+// $sql = "SELECT * FROM  `events` WHERE premium = 0 LIMIT 7000";
 
 $sth = $dbh->prepare($sql);
 $sth->execute();
@@ -24,6 +26,8 @@ foreach($events as $event){
     $cc = $decoded[0]->cc;
     $language = $decoded[0]->language;
 
+    $premium = false;
+
     $player_count = -1;
     $nickname = '';
     foreach($decoded as $device){
@@ -31,14 +35,17 @@ foreach($events as $event){
             $nickname = $device->nickname;
         }
         if($device !== ''){
+            if($device->premium === "true"){
+                $premium = true;
+            }
             $player_count++;
         };
     }
     echo 'count: ' . $player_count . '</br>';
 
-    $sql = "UPDATE events SET `uid` = :uid, `cc` = :cc, `player_count` = :player_count, `language` = :language, `nickname` = :nickname WHERE `id` = :id";
+    $sql = "UPDATE events SET `expanded` = 1, `premium` = :premium, `uid` = :uid, `cc` = :cc, `player_count` = :player_count, `language` = :language, `nickname` = :nickname WHERE `id` = :id";
     $sth = $dbh->prepare($sql);
-    $sth->execute(array(":uid" => $uid, ":cc" => $cc, ":id" => $event['id'], ":player_count" => $player_count, ":language" => $language, ":nickname" => $nickname)); 
+    $sth->execute(array(":premium" => $premium ,":uid" => $uid, ":cc" => $cc, ":id" => $event['id'], ":player_count" => $player_count, ":language" => $language, ":nickname" => $nickname)); 
 }
 
 ?>
