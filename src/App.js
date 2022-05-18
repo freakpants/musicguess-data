@@ -553,7 +553,7 @@ class App extends React.Component {
             <DataGrid
               rows={this.state.songs}
               columns={this.trackColumns}
-              pageSize={4}
+              pageSize={60}
               rowsPerPageOptions={[5]}
               rowHeight={200}
             />
