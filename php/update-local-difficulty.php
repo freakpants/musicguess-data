@@ -26,15 +26,14 @@ foreach($results as $track){
     // calculate average time
     $correctTime = $track['correctTime'];
     $correctCount  = $track['correctCount'];
+    $incorrectCount = $track['incorrectCount'];
 
-    if($correctCount > 0){
-        $averageTime = $correctTime / $correctCount;
-    } else {
-        $averageTime = 0;
-    }
+    $totalTime = (30 * $incorrectCount) + $correctTime;
+
+    $averageTime = $totalTime / ($correctCount + $incorrectCount);   
 
     // calculate correct percent
-    $incorrectCount = $track['incorrectCount'];
+
     $correctPercent = $correctCount / ($correctCount + $incorrectCount) * 100;
 
     // echo the average time and correct percent
