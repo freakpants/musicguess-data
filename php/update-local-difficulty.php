@@ -34,6 +34,10 @@ foreach($results as $track){
 
     // calculate correct percent
 
+    // SELECT ALL RECORDS WHERE THE SUM OF incorrectCount and correctCount is greater than 7, and correctPercent is over 0 and under 100
+    $sql = "SELECT * FROM `itunes_tracks` WHERE correctPercent > 0 AND correctPercent < 100 AND correctCount + incorrectCount > 7 ORDER BY `itunes_tracks`.`averageTime` DESC";
+
+
     $correctPercent = $correctCount / ($correctCount + $incorrectCount) * 100;
 
     // echo the average time and correct percent
