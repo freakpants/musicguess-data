@@ -75,6 +75,9 @@ $artists = [
     "Shirtless Violinist",
     "Elijah Eilish",
     "Orgel Sound J-Pop",
+    "Peter B.-Reber",
+    "Max Bygraves",
+    "The Butterfly Chillout Ensemble",
 ];
 
 $collections = [
@@ -125,7 +128,7 @@ $collections = [
 "Rieu Celebrates",
 "(Live)",
 "The Ultimate Fan Extras Collection",
-"'90s Soul Number 1's",
+"90s",
 "Hits 'N' Flips 1967-1970",
 "Ao Vivo",
 "Surf Music Chill",
@@ -205,7 +208,6 @@ $collections = [
 "Trending Hip Hop",
 "Coffeehouse Classics",
 "Live Around the World",
-"The Greatest 90s Soul",
 "Pop Anthology",
 "Songs of the",
 "80's the Collection",
@@ -287,9 +289,29 @@ $collections = [
 "Absolute Dance Hits",
 "Ambient Translations",
 "70's Top 40",
+"Collectors Series",
+"Songs Without Words",
+"Meets the Beatles",
+"- Das Musical",
+"Fitness Motivation",
+"The Definitive Collection",
+"20 #1’s: Pop",
+"Turnt Up",
+"(Music From the Original Series)",
+"Basketball Finals",
+"Smash Hits",
+"[Live]",
+"Mother's Day Love",
+"Acoustic With",
+"Summer Jams",
+"TikTok Summer",
+"Valley of Dutch Heroes",
+"- Rap Chill",
+"A Collection of",
+"Rainbow Days",
 ];
 
-$tracks = ["Demo)", "as made famous by", "Tribute To", "(Acoustic Version)", "(Live at the"];
+$tracks = ["Demo)", "as made famous by", "Tribute To", "(Acoustic Version)", "(Live at the", "(Live Version)"];
 
 foreach($artists as $artist){
     echo $artist . '<br>';

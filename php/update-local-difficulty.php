@@ -8,6 +8,9 @@ $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 global $dbh_online;
 $dbh_online = new PDO('mysql:host=freakpants.ch;dbname=' . $dbname_online , $user_online, $password_online);
 
+// SELECT ALL RECORDS WHERE THE SUM OF incorrectCount and correctCount is greater than 7, and correctPercent is over 0 and under 100
+// SELECT * FROM `itunes_tracks` WHERE correctPercent > 0 AND correctPercent < 100 AND correctCount + incorrectCount > 7 ORDER BY `itunes_tracks`.`averageTime` DESC
+
 // get all online tracks that have difficulty data
 $sql = "SELECT * FROM itunes_tracks WHERE correctCount > 0 OR inCorrectCount > 0";
 
@@ -34,8 +37,7 @@ foreach($results as $track){
 
     // calculate correct percent
 
-    // SELECT ALL RECORDS WHERE THE SUM OF incorrectCount and correctCount is greater than 7, and correctPercent is over 0 and under 100
-    $sql = "SELECT * FROM `itunes_tracks` WHERE correctPercent > 0 AND correctPercent < 100 AND correctCount + incorrectCount > 7 ORDER BY `itunes_tracks`.`averageTime` DESC";
+
 
 
     $correctPercent = $correctCount / ($correctCount + $incorrectCount) * 100;
