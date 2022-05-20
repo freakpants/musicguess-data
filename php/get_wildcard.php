@@ -9,7 +9,7 @@ $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 
 
 $sql = "SELECT 'itunes' as service, id, artistName as artist, trackName as title, previewUrl as preview_url, collectionName as album, collectionViewUrl as buy_link, collectionId, artworkUrl100
- FROM itunes_tracks WHERE 1 ORDER BY RAND() LIMIT 100";
+ FROM itunes_tracks WHERE wildcardBlocked = 0 ORDER BY RAND() LIMIT 100";
 
 $sth = $dbh->prepare($sql);
 $sth->execute();
