@@ -1,5 +1,5 @@
 <?php
-/* called by cron once a minute, updates 10 tracks */
+/* called by cron once a minute, updates 500 tracks */
 require("connect.php");
 
 global $dbh;
@@ -9,7 +9,7 @@ global $dbh_online;
 $dbh_online = new PDO('mysql:host=freakpants.ch;dbname=' . $dbname_online , $user_online, $password_online);
 
 // get all online tracks with missing data
-$sql = "SELECT * FROM itunes_tracks WHERE artistName = '' OR trackName= '' OR collectionName = '' LIMIT 10";
+$sql = "SELECT * FROM itunes_tracks WHERE artistName = '' OR trackName= '' OR collectionName = '' LIMIT 500";
 
 
 $sth = $dbh_online->prepare($sql);
