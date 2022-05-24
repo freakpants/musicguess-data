@@ -633,6 +633,21 @@ $collections = [
     "pink is a color",
     "IN DA CLUB",
     "lofi love",
+    "NOBODY KNOWS",
+    "Calm Summer Night",
+    "Summertime",
+    "Bikin",
+    "Semangat",
+    "Love Tonight",
+    "RomanTic Tok",
+    "Dance Classics",
+    "Electronic Music",
+    "Running",
+    "die grossen Erfolge",
+    "Blaze It",
+    "Summer Vacation Vibes",
+    "Kucna",
+    "Žurka",
 ];
 
 $tracks = ["Demo", "as made famous by", "Tribute To", "Acoustic", "Live", "Version", "Edited", "Medley", "Parody", "Christmas", "(From", "Tribute", "Dialogue"];
