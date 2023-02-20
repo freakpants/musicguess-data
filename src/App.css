@@ -7,3 +7,7 @@
 .coverArt{
   width: 100%;
 }
+
+body > iframe {
+  pointer-events: none;
+}

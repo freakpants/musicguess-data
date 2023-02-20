@@ -129,6 +129,7 @@ $artists = [
     "Bathtub Dogs",
     "String Quartet",
     "Plus Guest",
+    "A-Sides Club",
 ];
 
 $collections = [

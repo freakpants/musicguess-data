@@ -2,8 +2,6 @@
 /* called by cron once a minute, lookup 10 tracks, mark lookup as in progress */
 require("connect.php");
 
-
-
 global $dbh;
 $dbh = new PDO('mysql:host=localhost;dbname=' . $dbname , $user, $password);
 
