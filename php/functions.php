@@ -1,4 +1,9 @@
 <?php
+
+/*
+jQuery("#b").find(".k.bs").each(function(){ console.log("INSERT INTO lookup (artist,title) VALUES ('" + $(this).find(".p a").attr("title") + "','" + $(this).find(".db a").attr("title")  + "');" );});
+*/
+
 // helper functions that are used by multiple files
 
 function get_album_art($artist = '', $title = '', $collectionId = 0){
