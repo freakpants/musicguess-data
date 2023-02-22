@@ -3,3 +3,4 @@ album_art/
 .vscode/
 node_modules/
 app/config/db.config.js
+musicguess.sql
